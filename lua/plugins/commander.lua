@@ -6,17 +6,12 @@ return {
       components = {
         "DESC",
         "KEYS",
-        "CMD",
-        "CAT",
       },
       sort_by = {
         "DESC",
-        "KEYS",
-        "CMD",
-        "CAT",
       },
       separator = " ",
-      auto_replace_desc_with_cmd = true,
+      auto_replace_desc_with_cmd = false,
       prompt_title = "Commander",
       integration = {
         telescope = {
@@ -33,22 +28,22 @@ return {
     -- Add commands
     require("commander").add({
       {
-        desc = "Find files",
+        desc = "Find Files Search through project files",
         cmd = "<CMD>Telescope find_files<CR>",
         keys = { "n", "<leader>ff" },
       },
       {
-        desc = "Live grep", 
+        desc = "Live Grep Search text in files", 
         cmd = "<CMD>Telescope live_grep<CR>",
         keys = { "n", "<leader>fg" },
       },
       {
-        desc = "Buffers",
+        desc = "Buffers Switch between open files",
         cmd = "<CMD>Telescope buffers<CR>",
         keys = { "n", "<leader>fb" },
       },
       {
-        desc = "Terminal",
+        desc = "Terminal Launch floating terminal",
         cmd = function()
           -- Create floating terminal in center of screen
           local width = math.floor(vim.o.columns * 0.8)
@@ -83,8 +78,13 @@ return {
             end
           })
           
-          -- Enter insert mode
-          vim.cmd('startinsert')
+          -- Add escape key mapping to close terminal
+          vim.api.nvim_buf_set_keymap(buf, 't', '<Esc>', '<C-\\><C-n>:q<CR>', { noremap = true, silent = true })
+          
+          -- Enter insert mode (schedule to ensure terminal is ready)
+          vim.schedule(function()
+            vim.cmd('startinsert')
+          end)
         end,
         keys = { "n", "<leader>t" },
       },
