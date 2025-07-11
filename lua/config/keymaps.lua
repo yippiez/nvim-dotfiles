@@ -16,6 +16,7 @@ vim.cmd([[ command! W  w ]])
 -- LSP keybindings
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Go to definition' })
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Go to declaration' })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic popup' })
 
 -- Oil file manager
 vim.keymap.set('n', '<leader>o', '<CMD>Oil<CR>', { desc = 'Open Oil file manager' })

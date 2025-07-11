@@ -3,14 +3,42 @@ vim.diagnostic.config({
   virtual_text = {
     source = "always",
     prefix = "●",
+    spacing = 2,
+    format = function(diagnostic)
+      local max_width = 50
+      local message = diagnostic.message
+      if #message > max_width then
+        return message:sub(1, max_width - 3) .. "..."
+      end
+      return message
+    end,
   },
   float = {
     source = "always",
+    wrap = true,
+    border = "rounded",
+    header = "",
+    prefix = "",
   },
   signs = true,
   underline = true,
   update_in_insert = false,
   severity_sort = true,
+})
+
+-- Show diagnostic popup on hover
+vim.api.nvim_create_autocmd("CursorHold", {
+  callback = function()
+    local opts = {
+      focusable = false,
+      close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+      border = 'rounded',
+      source = 'always',
+      prefix = ' ',
+      scope = 'cursor',
+    }
+    vim.diagnostic.open_float(nil, opts)
+  end
 })
 
 
