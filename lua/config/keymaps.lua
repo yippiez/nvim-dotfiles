@@ -21,3 +21,11 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagn
 -- Oil file manager
 vim.keymap.set('n', '<leader>o', '<CMD>Oil<CR>', { desc = 'Open Oil file manager' })
 
+-- Move lines up/down with Alt+arrow keys (like VSCode)
+vim.keymap.set('n', '<M-Up>', ':m .-2<CR>==', { desc = 'Move line up', silent = true })
+vim.keymap.set('n', '<M-Down>', ':m .+1<CR>==', { desc = 'Move line down', silent = true })
+vim.keymap.set('i', '<M-Up>', '<Esc>:m .-2<CR>==gi', { desc = 'Move line up', silent = true })
+vim.keymap.set('i', '<M-Down>', '<Esc>:m .+1<CR>==gi', { desc = 'Move line down', silent = true })
+vim.keymap.set('v', '<M-Up>', ':m \'<-2<CR>gv=gv', { desc = 'Move selection up', silent = true })
+vim.keymap.set('v', '<M-Down>', ':m \'>+1<CR>gv=gv', { desc = 'Move selection down', silent = true })
+
