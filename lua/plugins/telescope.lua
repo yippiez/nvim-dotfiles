@@ -5,13 +5,15 @@ return {
   config = function()
     require('telescope').setup({
       defaults = {
-        layout_strategy = 'center',
+        layout_strategy = 'horizontal',
         layout_config = {
-          width = 0.6,
+          width = 0.95,
           height = 0.8,
           prompt_position = 'top',
+          preview_width = 0.5,
+          preview_cutoff = 50,
         },
-        previewer = false,
+        previewer = true,
       },
     })
   end,
