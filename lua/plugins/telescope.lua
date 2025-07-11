@@ -10,8 +10,10 @@ return {
           width = 0.95,
           height = 0.8,
           prompt_position = 'top',
-          preview_width = 0.5,
           preview_cutoff = 50,
+          horizontal = {
+            preview_width = 0.5,
+          },
         },
         previewer = true,
       },
