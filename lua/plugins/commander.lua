@@ -47,6 +47,47 @@ return {
         cmd = "<CMD>Telescope buffers<CR>",
         keys = { "n", "<leader>fb" },
       },
+      {
+        desc = "Terminal",
+        cmd = function()
+          -- Create floating terminal in center of screen
+          local width = math.floor(vim.o.columns * 0.8)
+          local height = math.floor(vim.o.lines * 0.8)
+          local row = math.floor((vim.o.lines - height) / 2)
+          local col = math.floor((vim.o.columns - width) / 2)
+          
+          -- Create new buffer
+          local buf = vim.api.nvim_create_buf(false, true)
+          
+          -- Window options
+          local opts = {
+            relative = 'editor',
+            width = width,
+            height = height,
+            row = row,
+            col = col,
+            style = 'minimal',
+            border = 'rounded',
+          }
+          
+          -- Create floating window
+          local win = vim.api.nvim_open_win(buf, true, opts)
+          
+          -- Start terminal
+          vim.fn.termopen(vim.o.shell, {
+            on_exit = function()
+              -- Close window when terminal exits
+              if vim.api.nvim_win_is_valid(win) then
+                vim.api.nvim_win_close(win, true)
+              end
+            end
+          })
+          
+          -- Enter insert mode
+          vim.cmd('startinsert')
+        end,
+        keys = { "n", "<leader>t" },
+      },
     })
     
     -- VS Code-style command palette function
