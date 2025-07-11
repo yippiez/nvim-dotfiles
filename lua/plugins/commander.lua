@@ -43,6 +43,11 @@ return {
         keys = { "n", "<leader>fb" },
       },
       {
+        desc = "Oil File manager for directories",
+        cmd = "<CMD>Oil<CR>",
+        keys = { "n", "<leader>o" },
+      },
+      {
         desc = "Terminal Launch floating terminal",
         cmd = function()
           -- Create floating terminal in center of screen
