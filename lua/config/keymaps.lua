@@ -23,6 +23,10 @@ vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Go to declaration' 
 vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'Go to references' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic popup' })
 
+-- Navigate diagnostics/errors
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic' })
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic' })
+
 -- Oil file manager
 vim.keymap.set('n', '<leader>o', '<CMD>Oil<CR>', { desc = 'Open Oil file manager' })
 

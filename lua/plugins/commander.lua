@@ -33,6 +33,67 @@ return {
         keys = { "n", "<leader>ff" },
       },
       {
+        desc = "Terminal Launch floating terminal",
+        cmd = function()
+          -- Create floating terminal in center of screen
+          local width = math.floor(vim.o.columns * 0.8)
+          local height = math.floor(vim.o.lines * 0.8)
+          local row = math.floor((vim.o.lines - height) / 2)
+          local col = math.floor((vim.o.columns - width) / 2)
+          
+          -- Create new buffer
+          local buf = vim.api.nvim_create_buf(false, true)
+          
+          -- Window options
+          local opts = {
+            relative = 'editor',
+            width = width,
+            height = height,
+            row = row,
+            col = col,
+            style = 'minimal',
+            border = 'rounded',
+          }
+          
+          -- Create floating window
+          local win = vim.api.nvim_open_win(buf, true, opts)
+          
+          -- Start terminal
+          vim.fn.termopen(vim.o.shell, {
+            on_exit = function()
+              -- Close window when terminal exits
+              if vim.api.nvim_win_is_valid(win) then
+                vim.api.nvim_win_close(win, true)
+              end
+            end
+          })
+          
+          -- Add escape key mapping to close terminal
+          vim.api.nvim_buf_set_keymap(buf, 't', '<Esc>', '<C-\\><C-n>:q<CR>', { noremap = true, silent = true })
+          
+          -- Enter insert mode (schedule to ensure terminal is ready)
+          vim.schedule(function()
+            vim.cmd('startinsert')
+          end)
+        end,
+        keys = { "n", "<leader>t" },
+      },
+      {
+        desc = "Go to Next Error Navigate to next diagnostic",
+        cmd = function() vim.diagnostic.goto_next() end,
+        keys = { "n", "]d" },
+      },
+      {
+        desc = "Go to Previous Error Navigate to previous diagnostic",
+        cmd = function() vim.diagnostic.goto_prev() end,
+        keys = { "n", "[d" },
+      },
+      {
+        desc = "Oil File manager for directories",
+        cmd = "<CMD>Oil<CR>",
+        keys = { "n", "<leader>o" },
+      },
+      {
         desc = "Live Grep Search text in files", 
         cmd = "<CMD>Telescope live_grep<CR>",
         keys = { "n", "<leader>fg" },
@@ -41,11 +102,6 @@ return {
         desc = "Buffers Switch between open files",
         cmd = "<CMD>Telescope buffers<CR>",
         keys = { "n", "<leader>fb" },
-      },
-      {
-        desc = "Oil File manager for directories",
-        cmd = "<CMD>Oil<CR>",
-        keys = { "n", "<leader>o" },
       },
       {
         desc = "Tree Show project structure",
@@ -98,52 +154,6 @@ return {
           })
         end,
         keys = { "n", "<leader>T" },
-      },
-      {
-        desc = "Terminal Launch floating terminal",
-        cmd = function()
-          -- Create floating terminal in center of screen
-          local width = math.floor(vim.o.columns * 0.8)
-          local height = math.floor(vim.o.lines * 0.8)
-          local row = math.floor((vim.o.lines - height) / 2)
-          local col = math.floor((vim.o.columns - width) / 2)
-          
-          -- Create new buffer
-          local buf = vim.api.nvim_create_buf(false, true)
-          
-          -- Window options
-          local opts = {
-            relative = 'editor',
-            width = width,
-            height = height,
-            row = row,
-            col = col,
-            style = 'minimal',
-            border = 'rounded',
-          }
-          
-          -- Create floating window
-          local win = vim.api.nvim_open_win(buf, true, opts)
-          
-          -- Start terminal
-          vim.fn.termopen(vim.o.shell, {
-            on_exit = function()
-              -- Close window when terminal exits
-              if vim.api.nvim_win_is_valid(win) then
-                vim.api.nvim_win_close(win, true)
-              end
-            end
-          })
-          
-          -- Add escape key mapping to close terminal
-          vim.api.nvim_buf_set_keymap(buf, 't', '<Esc>', '<C-\\><C-n>:q<CR>', { noremap = true, silent = true })
-          
-          -- Enter insert mode (schedule to ensure terminal is ready)
-          vim.schedule(function()
-            vim.cmd('startinsert')
-          end)
-        end,
-        keys = { "n", "<leader>t" },
       },
       {
         desc = "Git Preview Hunk Inline Show current hunk changes inline",
