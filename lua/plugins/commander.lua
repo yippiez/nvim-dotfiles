@@ -145,6 +145,18 @@ return {
         end,
         keys = { "n", "<leader>t" },
       },
+      {
+        desc = "Git Preview Hunk Inline Show current hunk changes inline",
+        cmd = "<CMD>Gitsigns preview_hunk_inline<CR>",
+      },
+      {
+        desc = "Git Preview Hunk Popup Show current hunk changes in popup",
+        cmd = "<CMD>Gitsigns preview_hunk<CR>",
+      },
+      {
+        desc = "Git Toggle Line Blame Show blame for current line",
+        cmd = "<CMD>Gitsigns toggle_current_line_blame<CR>",
+      },
     })
     
     -- VS Code-style command palette function
