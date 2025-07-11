@@ -48,6 +48,61 @@ return {
         keys = { "n", "<leader>o" },
       },
       {
+        desc = "Tree Show project structure",
+        cmd = function()
+          -- Create floating window for tree output
+          local width = math.floor(vim.o.columns * 0.8)
+          local height = math.floor(vim.o.lines * 0.8)
+          local row = math.floor((vim.o.lines - height) / 2)
+          local col = math.floor((vim.o.columns - width) / 2)
+          
+          -- Create new buffer
+          local buf = vim.api.nvim_create_buf(false, true)
+          
+          -- Window options
+          local opts = {
+            relative = 'editor',
+            width = width,
+            height = height,
+            row = row,
+            col = col,
+            style = 'minimal',
+            border = 'rounded',
+            title = 'Project Tree',
+            title_pos = 'center',
+          }
+          
+          -- Create floating window
+          local win = vim.api.nvim_open_win(buf, true, opts)
+          
+          -- Run exa tree command with exclusions
+          local cmd = {
+            'exa', '--tree', '--level', '5', '--icons',
+            '--ignore-glob', '.git|__pycache__|*.pyc|node_modules|.venv|.env|*.egg-info|.pytest_cache|.coverage|htmlcov|.DS_Store|Thumbs.db|.idea|.vscode'
+          }
+          
+          vim.fn.jobstart(cmd, {
+            stdout_buffered = true,
+            on_stdout = function(_, data)
+              if data then
+                vim.api.nvim_buf_set_lines(buf, 0, -1, false, data)
+              end
+            end,
+            on_exit = function()
+              -- Set buffer options for read-only display
+              vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+              vim.api.nvim_buf_set_option(buf, 'readonly', true)
+              vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
+              
+              -- Add keybinding to close with escape or q
+              vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', ':q<CR>', { noremap = true, silent = true })
+              vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':q<CR>', { noremap = true, silent = true })
+            end
+          })
+        end,
+        keys = { "n", "<leader>T" },
+      },
+      {
         desc = "Terminal Launch floating terminal",
         cmd = function()
           -- Create floating terminal in center of screen
