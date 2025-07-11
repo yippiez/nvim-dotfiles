@@ -75,28 +75,25 @@ return {
           -- Create floating window
           local win = vim.api.nvim_open_win(buf, true, opts)
           
-          -- Run exa tree command with exclusions
-          local cmd = {
-            'exa', '--tree', '--level', '5', '--icons',
-            '--ignore-glob', '.git|__pycache__|*.pyc|node_modules|.venv|.env|*.egg-info|.pytest_cache|.coverage|htmlcov|.DS_Store|Thumbs.db|.idea|.vscode'
-          }
+          -- Check if exa is available, fallback to tree command
+          local cmd_string
+          if vim.fn.executable('exa') == 1 then
+            cmd_string = 'exa --tree --level 5 --color=always --ignore-glob ".git|__pycache__|*.pyc|node_modules|.venv|.env|*.egg-info|.pytest_cache|.coverage|htmlcov|.DS_Store|Thumbs.db|.idea|.vscode"'
+          else
+            cmd_string = 'tree -L 5 -C -I ".git|__pycache__|*.pyc|node_modules|.venv|.env|*.egg-info|.pytest_cache|.coverage|htmlcov|.DS_Store|Thumbs.db|.idea|.vscode"'
+          end
           
-          vim.fn.jobstart(cmd, {
-            stdout_buffered = true,
-            on_stdout = function(_, data)
-              if data then
-                vim.api.nvim_buf_set_lines(buf, 0, -1, false, data)
-              end
-            end,
+          -- Use terminal to run command with colors
+          vim.fn.termopen(cmd_string, {
             on_exit = function()
               -- Set buffer options for read-only display
               vim.api.nvim_buf_set_option(buf, 'modifiable', false)
               vim.api.nvim_buf_set_option(buf, 'readonly', true)
-              vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
               
               -- Add keybinding to close with escape or q
               vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', ':q<CR>', { noremap = true, silent = true })
               vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':q<CR>', { noremap = true, silent = true })
+              vim.api.nvim_buf_set_keymap(buf, 't', '<Esc>', '<C-\\><C-n>:q<CR>', { noremap = true, silent = true })
             end
           })
         end,
