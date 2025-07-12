@@ -16,6 +16,7 @@ return {
           },
         },
         previewer = true,
+        file_ignore_patterns = { "node_modules" },
       },
     })
   end,
