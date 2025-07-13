@@ -87,3 +87,52 @@ vim.lsp.config('pyright', {
     end
   end,
 })
+
+-- TypeScript/JavaScript LSP configuration
+vim.lsp.enable('ts_ls')
+vim.lsp.config('ts_ls', {
+  cmd = { 'typescript-language-server', '--stdio' },
+  filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+  root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' },
+  settings = {
+    typescript = {
+      inlayHints = {
+        includeInlayParameterNameHints = 'literal',
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = false,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+    javascript = {
+      inlayHints = {
+        includeInlayParameterNameHints = 'all',
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+  },
+})
+
+-- Svelte LSP configuration
+vim.lsp.enable('svelte')
+vim.lsp.config('svelte', {
+  cmd = { 'svelteserver', '--stdio' },
+  filetypes = { 'svelte' },
+  root_markers = { 'package.json', 'svelte.config.js', 'svelte.config.mjs', 'svelte.config.cjs', '.git' },
+  settings = {
+    svelte = {
+      plugin = {
+        html = { completions = { enable = true, emmet = false } },
+        svelte = { completions = { enable = true, emmet = true } },
+        css = { completions = { enable = true, emmet = true } },
+      },
+    },
+  },
+})
