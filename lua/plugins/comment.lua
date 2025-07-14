@@ -1,6 +1,10 @@
 return {
     'numToStr/Comment.nvim',
     opts = {
-        -- add any options here
+        -- Disable all default keybindings
+        mappings = {
+            basic = false,
+            extra = false,
+        },
     }
 }
