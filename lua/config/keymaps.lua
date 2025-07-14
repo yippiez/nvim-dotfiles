@@ -30,6 +30,19 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 -- Oil file manager
 vim.keymap.set('n', '<leader>o', '<CMD>Oil<CR>', { desc = 'Open Oil file manager' })
 
+-- Comment toggle with Ctrl+/ (works in most terminals)
+vim.keymap.set('n', '<C-/>', function()
+  require('Comment.api').toggle.linewise.current()
+end, { desc = 'Comment toggle current line' })
+vim.keymap.set('v', '<C-/>', "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", { desc = 'Comment toggle selection' })
+
+-- Alternative: Leader+c+c for commenting
+vim.keymap.set('n', '<leader>cc', function()
+  require('Comment.api').toggle.linewise.current()
+end, { desc = 'Comment toggle current line' })
+vim.keymap.set('v', '<leader>cc', "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", { desc = 'Comment toggle selection' })
+
+
 -- Move lines up/down with Alt+arrow keys (like VSCode)
 vim.keymap.set('n', '<M-Up>', ':m .-2<CR>==', { desc = 'Move line up', silent = true })
 vim.keymap.set('n', '<M-Down>', ':m .+1<CR>==', { desc = 'Move line down', silent = true })
