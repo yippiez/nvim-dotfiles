@@ -5,18 +5,23 @@ return {
   config = function()
     require('telescope').setup({
       defaults = {
-        layout_strategy = 'horizontal',
+        layout_strategy = 'bottom_pane',
         layout_config = {
-          width = 0.95,
-          height = 0.8,
+          height = 0.4,
+          width = function(_, max_columns, _)
+            return math.min(max_columns, 80)
+          end,
           prompt_position = 'top',
-          preview_cutoff = 50,
-          horizontal = {
-            preview_width = 0.5,
-          },
         },
-        previewer = true,
+        previewer = false,
         file_ignore_patterns = { "node_modules" },
+        sorting_strategy = 'ascending',
+        prompt_prefix = '> ',
+        selection_caret = '  ',
+        entry_prefix = '  ',
+        results_title = false,
+        prompt_title = false,
+        preview_title = false,
       },
     })
   end,

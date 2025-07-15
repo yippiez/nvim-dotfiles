@@ -16,7 +16,25 @@ return {
       integration = {
         telescope = {
           enable = true,
-          theme = require("telescope.themes").get_ivy
+          theme = function()
+            return {
+              layout_strategy = 'horizontal',
+              layout_config = {
+                width = function(_, max_columns, _)
+                  return math.min(max_columns, 80)
+                end,
+                height = 0.4,
+                prompt_position = 'top',
+                anchor = 'N',
+                preview_cutoff = 0,
+                horizontal = {
+                  preview_width = 0,
+                },
+              },
+              previewer = false,
+              sorting_strategy = 'ascending',
+            }
+          end
         },
         lazy = {
           enable = true,
@@ -169,27 +187,9 @@ return {
       },
     })
     
-    -- VS Code-style command palette function
-    local function vscode_command_palette()
-      local builtin = require('telescope.builtin')
-      
-      -- Start with file search
-      builtin.find_files({
-        prompt_title = "Find Files (type > for commands)",
-        attach_mappings = function(_, map)
-          -- When user types '>', switch to command mode
-          map('i', '>', function()
-            vim.cmd('stopinsert')
-            vim.schedule(function()
-              require("commander").show()
-            end)
-          end)
-          return true
-        end,
-      })
-    end
-    
-    -- Set keybinding for VS Code-style command palette
-    vim.keymap.set("n", "<C-p>", vscode_command_palette, { desc = "Command Palette" })
+    -- Set keybinding to directly launch commander
+    vim.keymap.set("n", "<C-p>", function()
+      require("commander").show()
+    end, { desc = "Command Palette" })
   end,
 }
