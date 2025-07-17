@@ -1,16 +1,8 @@
 return {
-  "jake-stewart/multicursor.nvim",
-  branch = "1.0",
-  config = function()
-    local mc = require("multicursor-nvim")
-    mc.setup()
-
-    -- gb - select word and add cursors to other occurrences
-    vim.keymap.set({"n", "x"}, "gb", function() mc.matchAddCursor(1) end, { desc = "Add cursor to next match" })
-    
-    -- Clear cursors with escape
-    mc.addKeymapLayer(function(layerSet)
-      layerSet("n", "<esc>", mc.clearCursors)
-    end)
-  end
+  "brenton-leighton/multiple-cursors.nvim",
+  version = "*",  -- Use the latest tagged version
+  opts = {},  -- This causes the plugin setup function to be called
+  keys = {
+    {"gb", "<Cmd>MultipleCursorsAddJumpNextMatch<CR>", mode = {"n", "x"}, desc = "Add cursor and jump to next match"},
+  },
 }
