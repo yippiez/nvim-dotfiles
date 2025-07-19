@@ -8,6 +8,9 @@ vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help ta
 -- in Insert mode, jk quickly returns you to Normal mode
 vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Exit insert mode', silent = true })
 
+-- Clear search highlights with Escape
+vim.keymap.set('n', '<Esc>', '<Cmd>noh<CR><Esc>', { desc = 'Clear search highlights', silent = true })
+
 -- Save file with Ctrl+S (like other editors)
 vim.keymap.set('n', '<C-s>', ':w<CR>', { desc = 'Save file', silent = true })
 vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>a', { desc = 'Save file', silent = true })
