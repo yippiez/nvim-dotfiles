@@ -22,6 +22,7 @@ vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Go to definition' })
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Go to declaration' })
 vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'Go to references' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic popup' })
+vim.keymap.set('n', '<leader>a', vim.lsp.buf.hover, { desc = 'Show LSP hover info' })
 
 -- Navigate diagnostics/errors
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic' })
@@ -44,4 +45,8 @@ vim.keymap.set('i', '<M-Up>', '<Esc>:m .-2<CR>==gi', { desc = 'Move line up', si
 vim.keymap.set('i', '<M-Down>', '<Esc>:m .+1<CR>==gi', { desc = 'Move line down', silent = true })
 vim.keymap.set('v', '<M-Up>', ':m \'<-2<CR>gv=gv', { desc = 'Move selection up', silent = true })
 vim.keymap.set('v', '<M-Down>', ':m \'>+1<CR>gv=gv', { desc = 'Move selection down', silent = true })
+
+-- Move text left/right with Alt+arrow keys
+vim.keymap.set('v', '<M-Left>', 'xhP`[v`]', { desc = 'Move selection left', silent = true })
+vim.keymap.set('v', '<M-Right>', 'xlp`[v`]', { desc = 'Move selection right', silent = true })
 
