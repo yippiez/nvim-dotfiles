@@ -9,5 +9,22 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.softtabstop = 4
 
+-- Fold settings to save manual folds
+vim.opt.foldmethod = "manual"
+vim.opt.viewoptions = "folds,cursor"
+
+-- Auto-save and restore folds
+vim.api.nvim_create_autocmd({"BufWinLeave"}, {
+  pattern = {"*.*"},
+  desc = "save view (folds), when closing file",
+  command = "mkview",
+})
+
+vim.api.nvim_create_autocmd({"BufWinEnter"}, {
+  pattern = {"*.*"},
+  desc = "load view (folds), when opening file",
+  command = "silent! loadview"
+})
+
 vim.cmd.colorscheme("tokyonight")
 
