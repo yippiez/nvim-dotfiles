@@ -9,6 +9,10 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.softtabstop = 4
 
+-- Line number settings
+vim.opt.number = true
+vim.opt.relativenumber = true
+
 -- Fold settings to save manual folds
 vim.opt.foldmethod = "manual"
 vim.opt.viewoptions = "folds,cursor"
