@@ -1,6 +1,14 @@
 require("config.lazy")
 require("config.keymaps")
-require("config.win32yank")
+
+-- Only load win32yank on Windows/WSL
+if vim.fn.has('win32') == 1 or vim.fn.has('wsl') == 1 then
+    require("config.win32yank")
+else
+    -- Use system clipboard on macOS and Linux
+    vim.opt.clipboard = "unnamedplus"
+end
+
 require("config.lsp")
 
 -- Global indentation settings
