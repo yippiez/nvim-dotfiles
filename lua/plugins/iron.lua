@@ -1,3 +1,5 @@
+-- Sourc https://github.com/Vigemus/iron.nvim
+
 return {
   'Vigemus/iron.nvim',
   config = function()
@@ -40,10 +42,22 @@ return {
       ignore_blank_lines = true,
     }
 
-    vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>')
-    vim.keymap.set('n', '<space>rh', '<cmd>IronHide<cr>')
+    -- Add descriptions for which-key
+    local wk = require("which-key")
+    wk.add({
+      { "<space>rr", desc = "Toggle REPL (right split)" },
+      { "<space>rb", desc = "Toggle REPL (bottom split)" },
+      { "<space>rR", desc = "Restart REPL" },
+      { "<space>rl", desc = "Send line to REPL" },
+      { "<space>rv", desc = "Send selection to REPL", mode = "v" },
+      { "<space>ri", desc = "Interrupt REPL" },
+    })
+
+    -- Additional REPL keymaps
+    vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>', { desc = 'Focus REPL' })
+    vim.keymap.set('n', '<space>rh', '<cmd>IronHide<cr>', { desc = 'Hide REPL' })
     
     -- Easy escape from terminal
-    vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
+    vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
   end,
 }
