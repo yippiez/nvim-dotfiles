@@ -37,7 +37,7 @@ return {
           end
         },
         lazy = {
-          enable = true,
+          enable = false,
           set_plugin_name_as_cat = false
         }
       }
