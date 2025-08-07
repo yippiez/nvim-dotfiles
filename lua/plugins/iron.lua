@@ -29,12 +29,12 @@ return {
         },
       },
       keymaps = {
-        toggle_repl_with_cmd_1 = "<space>rr", -- Right split
-        toggle_repl_with_cmd_2 = "<space>rb", -- Bottom split
-        restart_repl = "<space>rR",
-        send_line = "<space>rl",
-        visual_send = "<space>rv",
-        interrupt = "<space>ri",
+        toggle_repl_with_cmd_1 = "<leader>rr", -- Right split
+        toggle_repl_with_cmd_2 = "<leader>rb", -- Bottom split
+        restart_repl = "<leader>rR",
+        send_line = "<leader>rl",
+        visual_send = "<leader>rv",
+        interrupt = "<leader>ri",
       },
       highlight = {
         italic = true
@@ -45,17 +45,17 @@ return {
     -- Add descriptions for which-key
     local wk = require("which-key")
     wk.add({
-      { "<space>rr", desc = "Toggle REPL (right split)" },
-      { "<space>rb", desc = "Toggle REPL (bottom split)" },
-      { "<space>rR", desc = "Restart REPL" },
-      { "<space>rl", desc = "Send line to REPL" },
-      { "<space>rv", desc = "Send selection to REPL", mode = "v" },
-      { "<space>ri", desc = "Interrupt REPL" },
+      { "<leader>rr", desc = "Toggle REPL (right split)" },
+      { "<leader>rb", desc = "Toggle REPL (bottom split)" },
+      { "<leader>rR", desc = "Restart REPL" },
+      { "<leader>rl", desc = "Send line to REPL" },
+      { "<leader>rv", desc = "Send selection to REPL", mode = "v" },
+      { "<leader>ri", desc = "Interrupt REPL" },
     })
 
     -- Additional REPL keymaps
-    vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>', { desc = 'Focus REPL' })
-    vim.keymap.set('n', '<space>rh', '<cmd>IronHide<cr>', { desc = 'Hide REPL' })
+    vim.keymap.set('n', '<leader>rf', '<cmd>IronFocus<cr>', { desc = 'Focus REPL' })
+    vim.keymap.set('n', '<leader>rh', '<cmd>IronHide<cr>', { desc = 'Hide REPL' })
     
     -- Easy escape from terminal
     vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })

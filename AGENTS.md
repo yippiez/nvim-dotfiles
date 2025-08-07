@@ -16,10 +16,11 @@ This is a modular Neovim configuration using lazy.nvim plugin manager.
 - `comment.lua` - Smart commenting (no keybindings)
 - `completion.lua` - nvim-cmp autocompletion with LSP/buffer sources
 - `gitsigns.lua` - Git change indicators (visual only)
-- `iron.lua` - REPL integration (`<space>r*` keybindings)
+- `iron.lua` - REPL integration (`<leader>r*` keybindings)
+- `lualine.lua` - Status line with git and LSP integration
+- `flash.lua` - Fast navigation and jumping (`s`, `S` keys)
 - `multicursor.lua` - Multiple cursor editing (`gb` to add cursors)
 - `oil.lua` - File manager treating directories as buffers
-- `surround.lua` - Manage surrounding characters
 - `telescope.lua` - Fuzzy finder (integrated with commander)
 - `treesitter.lua` - Syntax highlighting (`gnn`, `grn` for selections)
 - `which-key.lua` - Keybinding help popup
