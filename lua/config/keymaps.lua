@@ -25,8 +25,8 @@ vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Go to definition' })
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Go to declaration' })
 vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'Go to references' })
 vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename, { desc = 'Rename symbol' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic popup' })
-vim.keymap.set('n', '<leader>a', vim.lsp.buf.hover, { desc = 'Show LSP hover info' })
+vim.keymap.set('n', '<leader>le', vim.diagnostic.open_float, { desc = 'Show diagnostic popup' })
+vim.keymap.set('n', '<leader>la', vim.lsp.buf.hover, { desc = 'Show LSP hover info' })
 
 -- Navigate diagnostics/errors
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic' })
