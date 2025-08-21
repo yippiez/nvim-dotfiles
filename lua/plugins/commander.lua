@@ -95,6 +95,14 @@ return {
         desc = "Disable Line Wrap", 
         cmd = "<CMD>set nowrap<CR>",
       },
+      {
+        desc = "New Tab",
+        cmd = "<CMD>tabnew<CR>",
+      },
+      {
+        desc = "New Buffer",
+        cmd = "<CMD>enew<CR>",
+      },
     })
     
     -- Set keybinding to directly launch commander
