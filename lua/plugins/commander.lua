@@ -87,6 +87,14 @@ return {
         desc = "Git Toggle Line Blame Show blame for current line",
         cmd = "<CMD>Gitsigns toggle_current_line_blame<CR>",
       },
+      {
+        desc = "Enable Line Wrap",
+        cmd = "<CMD>set wrap<CR>",
+      },
+      {
+        desc = "Disable Line Wrap", 
+        cmd = "<CMD>set nowrap<CR>",
+      },
     })
     
     -- Set keybinding to directly launch commander
