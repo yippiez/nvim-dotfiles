@@ -103,6 +103,25 @@ return {
         desc = "New Buffer",
         cmd = "<CMD>enew<CR>",
       },
+      {
+        desc = "Next Todo Go to next todo comment",
+        cmd = function() require("todo-comments").jump_next() end,
+        keys = { "n", "]t" },
+      },
+      {
+        desc = "Previous Todo Go to previous todo comment",
+        cmd = function() require("todo-comments").jump_prev() end,
+        keys = { "n", "[t" },
+      },
+      {
+        desc = "Todo QuickFix Load todos into quickfix list",
+        cmd = "<CMD>TodoQuickFix<CR>",
+      },
+      {
+        desc = "Todo Telescope Search todos with telescope",
+        cmd = "<CMD>TodoTelescope<CR>",
+        keys = { "n", "<leader>ft" },
+      },
     })
     
     -- Set keybinding to directly launch commander
