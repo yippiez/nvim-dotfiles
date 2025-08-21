@@ -35,6 +35,9 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 -- Oil file manager
 vim.keymap.set('n', '<leader>o', '<CMD>Oil<CR>', { desc = 'Open Oil file manager' })
 
+-- Close buffer with Leader+q
+vim.keymap.set('n', '<leader>q', '<CMD>bd<CR>', { desc = 'Close buffer' })
+
 -- Comment toggle with Leader+cc
 vim.keymap.set('n', '<leader>cc', function()
   require('Comment.api').toggle.linewise.current()
