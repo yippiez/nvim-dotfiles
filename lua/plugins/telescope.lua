@@ -23,6 +23,20 @@ return {
         prompt_title = false,
         preview_title = false,
       },
+      pickers = {
+        find_files = {
+          disable_devicons = true,
+        },
+        live_grep = {
+          disable_devicons = true,
+        },
+        grep_string = {
+          disable_devicons = true,
+        },
+        buffers = {
+          disable_devicons = true,
+        },
+      },
     })
   end,
 }
