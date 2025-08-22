@@ -33,7 +33,7 @@ return {
         toggle_repl_with_cmd_2 = "<leader>rb", -- Bottom split
         restart_repl = "<leader>rR",
         send_line = "<leader>rl",
-        visual_send = "<leader>rv",
+        visual_send = "<leader>rl",
         interrupt = "<leader>ri",
       },
       highlight = {
@@ -49,7 +49,7 @@ return {
       { "<leader>rb", desc = "Toggle REPL (bottom split)" },
       { "<leader>rR", desc = "Restart REPL" },
       { "<leader>rl", desc = "Send line to REPL" },
-      { "<leader>rv", desc = "Send selection to REPL", mode = "v" },
+      { "<leader>rl", desc = "Send selection to REPL", mode = "v" },
       { "<leader>ri", desc = "Interrupt REPL" },
     })
 
