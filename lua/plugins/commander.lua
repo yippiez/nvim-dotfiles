@@ -131,7 +131,7 @@ return {
         cmd = "<CMD>Copilot disable<CR>",
       },
       {
-        desc = "Copilot Status",
+        desc = "Copilot Show Status",
         cmd = "<CMD>Copilot status<CR>",
       },
     })
