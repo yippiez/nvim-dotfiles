@@ -122,6 +122,18 @@ return {
         cmd = "<CMD>TodoTelescope<CR>",
         keys = { "n", "<leader>ft" },
       },
+      {
+        desc = "Copilot Enable Suggestions",
+        cmd = "<CMD>Copilot enable<CR>",
+      },
+      {
+        desc = "Copilot Disable Suggestions", 
+        cmd = "<CMD>Copilot disable<CR>",
+      },
+      {
+        desc = "Copilot Status",
+        cmd = "<CMD>Copilot status<CR>",
+      },
     })
     
     -- Set keybinding to directly launch commander
