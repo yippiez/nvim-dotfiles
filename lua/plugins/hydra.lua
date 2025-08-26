@@ -65,6 +65,7 @@ return {
         { 'q', function() require('dap').step_out() end, { desc = 'Step Out' } },
         { 'r', function() require('dap').run_to_cursor() end, { desc = 'Run to Cursor' } },
         { 'u', function() require('dap').repl.toggle() end, { desc = 'Toggle REPL' } },
+        { 'C', function() require('dap').set_breakpoint(vim.fn.input('Condition: ')) end, { desc = 'Conditional Breakpoint' } },
         { '<leader>d', nil, { exit = true, desc = 'Toggle Debug Mode Off' } },
         { 'Q', nil, { exit = true, desc = 'Quit Debug Mode' } },
         { '<Esc>', nil, { exit = true, desc = 'Exit' } },
