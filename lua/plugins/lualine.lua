@@ -31,9 +31,13 @@ return {
         lualine_c = {'filename'},
         lualine_x = {
           function()
-            return '(' .. #vim.fn.getbufinfo({buflisted = 1}) .. 'B)'
+            local bufs = #vim.fn.getbufinfo({ buflisted = 1 })
+            local ft = vim.bo.filetype or ""
+            if ft == "" then
+              return string.format("(%dB)", bufs)
+            end
+            return string.format("(%dB) %s", bufs, ft)
           end,
-          'filetype'
         },
         lualine_y = {'progress'},
         lualine_z = {{'location', fmt = function(str) return str:gsub(' ', '') end}}
