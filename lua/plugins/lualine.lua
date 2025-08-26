@@ -1,26 +1,6 @@
 return {
   'nvim-lualine/lualine.nvim',
   config = function()
-    local hydra_debug_active = false
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "HydraEnter",
-      callback = function(args)
-        if args.data.name == "Toggle Debug Mode" then
-          hydra_debug_active = true
-          require('lualine').refresh()
-        end
-      end
-    })
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "HydraLeave", 
-      callback = function(args)
-        if args.data.name == "Toggle Debug Mode" then
-          hydra_debug_active = false
-          require('lualine').refresh()
-        end
-      end
-    })
-
     require('lualine').setup {
       options = {
         icons_enabled = false,
@@ -43,18 +23,8 @@ return {
       sections = {
         lualine_a = {
           {
-            function()
-              if hydra_debug_active then
-                return 'DEBUG'
-              end
-              return require('lualine.utils.mode').get_mode()
-            end,
-            color = function()
-              if hydra_debug_active then
-                return { fg = '#ffffff', bg = '#228B22', gui = 'bold' }
-              end
-              return nil
-            end
+            _G.get_current_mode,
+            color = _G.get_current_mode_color
           }
         },
         lualine_b = {'branch', 'diff', 'diagnostics'},

@@ -3,6 +3,43 @@ return {
   config = function()
     local Hydra = require('hydra')
 
+    -- Global state and functions for lualine integration
+    _G.hydra_debug_active = false
+    
+    _G.get_current_mode = function()
+      if _G.hydra_debug_active then
+        return 'DEBUG'
+      end
+      return require('lualine.utils.mode').get_mode()
+    end
+    
+    _G.get_current_mode_color = function()
+      if _G.hydra_debug_active then
+        return { fg = '#ffffff', bg = '#228B22', gui = 'bold' }
+      end
+      return nil
+    end
+
+    -- Setup autocmds for lualine integration
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "HydraEnter",
+      callback = function(args)
+        if args.data.name == "Toggle Debug Mode" then
+          _G.hydra_debug_active = true
+          require('lualine').refresh()
+        end
+      end
+    })
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "HydraLeave", 
+      callback = function(args)
+        if args.data.name == "Toggle Debug Mode" then
+          _G.hydra_debug_active = false
+          require('lualine').refresh()
+        end
+      end
+    })
+
     Hydra({
       name = "Toggle Debug Mode",
       body = "<leader>d",
