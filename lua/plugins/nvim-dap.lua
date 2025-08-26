@@ -1,7 +1,7 @@
+-- https://github.com/mfussenegger/nvim-dap
 return {
   'mfussenegger/nvim-dap',
   dependencies = {
-    'miroshQa/debugmaster.nvim',
     'nvim-neotest/nvim-nio',
   },
   config = function()
@@ -43,13 +43,5 @@ return {
         end,
       },
     }
-
-    -- Setup debugmaster with default keybindings
-    require('debugmaster').setup({
-      ui = {
-        auto_open = true,
-        auto_close = true,
-      },
-    })
   end,
 }
