@@ -39,6 +39,8 @@ return {
         name = 'Launch file with uv',
         program = '${file}',
         console = 'integratedTerminal',
+        justMyCode = false,
+        stopOnEntry = false,
         pythonPath = function()
           -- Get the python path from uv in current directory
           local cwd = vim.fn.getcwd()
@@ -61,6 +63,8 @@ return {
         name = 'Launch file (system python)',
         program = '${file}',
         console = 'integratedTerminal',
+        justMyCode = false,
+        stopOnEntry = false,
         pythonPath = 'python3',
         cwd = '${workspaceFolder}',
       },
