@@ -82,6 +82,20 @@ return {
       },
     }
 
+    -- Override DAP continue to show helpful error messages
+    local original_continue = dap.continue
+    dap.continue = function()
+      local filetype = vim.bo.filetype
+      
+      -- Check if configuration exists for current filetype
+      if not dap.configurations[filetype] or #dap.configurations[filetype] == 0 then
+        vim.notify("Debugging not supported for filetype: " .. filetype, vim.log.levels.ERROR)
+        return
+      end
+      
+      original_continue()
+    end
+    
     -- Debug keymaps handled by hydra debug mode
     -- Use <leader>d to enter debug mode, then single keys for debugging
   end,
