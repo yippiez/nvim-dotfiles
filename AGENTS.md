@@ -2,6 +2,12 @@
 
 This is a modular Neovim configuration using lazy.nvim plugin manager.
 
+### Rules
+- When given a github URL fetch it and try to implement the plugin
+- After implementing a plugin run nvim headless to test plugin if possible
+- For simple plugins (no custom config), add their specs directly to `init.lua` inside the `require("lazy").setup({...})` block instead of creating a separate file.
+- Only create a separate file in `lua/plugins/` for plugins that require custom configuration or setup logic.
+
 ### Core Configuration
 - `init.lua` - Entry point, loads config modules and sets global options
 - `lua/config/` - Core configuration modules
@@ -26,6 +32,7 @@ This is a modular Neovim configuration using lazy.nvim plugin manager.
 - `which-key.lua` - Keybinding help popup
 
 ### Key Features
+- Commander plugin centralizes most commands instead of individual keybindings
 - **Command Palette**: `<C-p>` opens commander with all main actions
 - **File Management**: Oil plugin (`<leader>o`) for directory editing
 - **REPL Integration**: Iron plugin for interactive code execution
@@ -33,13 +40,3 @@ This is a modular Neovim configuration using lazy.nvim plugin manager.
 - **Auto-fold Persistence**: Manual folds saved/restored automatically
 - **WSL Clipboard**: Integrated clipboard support for Windows
 
-### Global Settings
-- 4-space indentation with spaces (no tabs)
-- Manual fold method with auto-save/restore
-- Tokyo Night colorscheme
-
-### Architecture Notes
-- Plugins are completely modular - each file in `lua/plugins/` returns a plugin spec
-- Commander plugin centralizes most commands instead of individual keybindings
-- LSP configuration is centralized in `lua/config/lsp.lua`
-- No custom build/test/lint commands - this is a configuration repository
