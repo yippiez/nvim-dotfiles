@@ -6,7 +6,19 @@ return {
   },
   config = function()
     local dap = require('dap')
-    
+
+    -- High-contrast DAP signs and highlights
+    vim.fn.sign_define('DapBreakpoint', { text = '⦿', texthl = 'DapBreakpoint', linehl = '', numhl = 'DapBreakpoint' })
+    vim.fn.sign_define('DapBreakpointCondition', { text = '◈', texthl = 'DapBreakpointCondition', linehl = '', numhl = 'DapBreakpointCondition' })
+    vim.fn.sign_define('DapBreakpointRejected', { text = '⊗', texthl = 'DapBreakpointRejected', linehl = '', numhl = 'DapBreakpointRejected' })
+    vim.fn.sign_define('DapStopped', { text = '➤', texthl = 'DapStopped', linehl = 'DapStoppedLine', numhl = 'DapStopped' })
+
+    vim.api.nvim_set_hl(0, 'DapBreakpoint', { fg = '#ff5555', bold = true })
+    vim.api.nvim_set_hl(0, 'DapBreakpointCondition', { fg = '#ffbd2e', bold = true })
+    vim.api.nvim_set_hl(0, 'DapBreakpointRejected', { fg = '#ff9e64', bold = true })
+    vim.api.nvim_set_hl(0, 'DapStopped', { fg = '#00d3a7', bold = true })
+    vim.api.nvim_set_hl(0, 'DapStoppedLine', { bg = '#20403a' })
+
     -- Python debugger configuration with uv
     dap.adapters.python = function(cb, config)
       if config.request == 'attach' then
