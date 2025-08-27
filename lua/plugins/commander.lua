@@ -118,7 +118,7 @@ return {
         cmd = "<CMD>TodoQuickFix<CR>",
       },
       {
-        desc = "Todo Telescope Search todos with telescope",
+        desc = "Telescope search todos",
         cmd = "<CMD>TodoTelescope<CR>",
         keys = { "n", "<leader>ft" },
       },

@@ -23,8 +23,18 @@ return {
       sections = {
         lualine_a = {
           {
-            _G.get_current_mode,
-            color = _G.get_current_mode_color
+            function()
+              if _G.hydra_debug_active then
+                return 'DEBUG'
+              end
+              return require('lualine.utils.mode').get_mode()
+            end,
+            color = function()
+              if _G.hydra_debug_active then
+                return { fg = '#ffffff', bg = '#228B22', gui = 'bold' }
+              end
+              return nil
+            end
           }
         },
         lualine_b = {'branch', 'diff', 'diagnostics'},

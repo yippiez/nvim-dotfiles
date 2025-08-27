@@ -5,7 +5,7 @@ return {
   dependencies = { "mfussenegger/nvim-dap" },
   opts = {
     winbar = {
-      sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "repl", "console" },
+      sections = { "console", "watches", "scopes", "exceptions", "breakpoints", "threads", "repl" },
       base_sections = {
         breakpoints = {
           keymap = "B",
