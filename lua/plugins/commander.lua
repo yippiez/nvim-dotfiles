@@ -46,9 +46,10 @@ return {
     -- Add commands
     require("commander").add({
       {
-        desc = "Find Files Search through project files",
+        desc = "Telescope: Find Files Search through project files",
         cmd = "<CMD>Telescope find_files<CR>",
         keys = { "n", "<leader>ff" },
+        set = false,
       },
       {
         desc = "Go to Next Error Navigate to next diagnostic",
@@ -66,14 +67,22 @@ return {
         keys = { "n", "<leader>o" },
       },
       {
-        desc = "Live Grep Search text in files", 
+        desc = "Telescope: Live Grep Search text in files", 
         cmd = "<CMD>Telescope live_grep<CR>",
         keys = { "n", "<leader>fg" },
+        set = false,
       },
       {
-        desc = "Buffers Switch between open files",
+        desc = "Telescope: Buffers Switch between open files",
         cmd = "<CMD>Telescope buffers<CR>",
         keys = { "n", "<leader>fb" },
+        set = false,
+      },
+      {
+        desc = "Telescope: Commands Command palette",
+        cmd = "<CMD>Telescope commands<CR>",
+        keys = { "n", "<leader>fc" },
+        set = false,
       },
       {
         desc = "Git Preview Hunk Inline Show current hunk changes inline",
@@ -86,6 +95,24 @@ return {
       {
         desc = "Git Toggle Line Blame Show blame for current line",
         cmd = "<CMD>Gitsigns toggle_current_line_blame<CR>",
+      },
+      {
+        desc = "Telescope: Git Status Project changes list",
+        cmd = "<CMD>Telescope git_status<CR>",
+        keys = { "n", "<leader>fs" },
+        set = false,
+      },
+      {
+        desc = "Telescope: Git Commits Repository history",
+        cmd = "<CMD>Telescope git_commits<CR>",
+        keys = { "n", "<leader>fG" },
+        set = false,
+      },
+      {
+        desc = "Telescope: Git Buffer Commits Current file history",
+        cmd = "<CMD>Telescope git_bcommits<CR>",
+        keys = { "n", "<leader>fB" },
+        set = false,
       },
       {
         desc = "Enable Line Wrap",
