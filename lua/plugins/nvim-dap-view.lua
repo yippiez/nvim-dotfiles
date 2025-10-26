@@ -115,9 +115,9 @@ return {
     local ok, commander = pcall(require, "commander")
     if ok then
       commander.add({
-        { desc = "DAP View: Open", cmd = "DapViewOpen", keys = {}, category = "Debug" },
-        { desc = "DAP View: Close", cmd = "DapViewClose", keys = {}, category = "Debug" },
-        { desc = "DAP View: Toggle", cmd = "DapViewToggle", keys = {}, category = "Debug" },
+        { desc = "Open Debug View", cmd = "DapViewOpen", keys = {}, category = "Debug" },
+        { desc = "Close Debug View", cmd = "DapViewClose", keys = {}, category = "Debug" },
+        { desc = "Toggle Debug View", cmd = "DapViewToggle", keys = {}, category = "Debug" },
       })
     end
 

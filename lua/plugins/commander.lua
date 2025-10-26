@@ -46,73 +46,100 @@ return {
     -- Add commands
     require("commander").add({
       {
-        desc = "Telescope: Find Files Search through project files",
+        desc = "Search Files",
         cmd = "<CMD>Telescope find_files<CR>",
         keys = { "n", "<leader>ff" },
         set = false,
       },
       {
-        desc = "Go to Next Error Navigate to next diagnostic",
-        cmd = function() vim.diagnostic.goto_next() end,
-        keys = { "n", "]d" },
-      },
-      {
-        desc = "Go to Previous Error Navigate to previous diagnostic",
-        cmd = function() vim.diagnostic.goto_prev() end,
-        keys = { "n", "[d" },
-      },
-      {
-        desc = "Oil File manager for directories",
-        cmd = "<CMD>Oil<CR>",
-        keys = { "n", "<leader>o" },
-      },
-      {
-        desc = "Telescope: Live Grep Search text in files", 
+        desc = "Search Text",
         cmd = "<CMD>Telescope live_grep<CR>",
         keys = { "n", "<leader>fg" },
         set = false,
       },
       {
-        desc = "Telescope: Buffers Switch between open files",
+        desc = "Search Buffers",
         cmd = "<CMD>Telescope buffers<CR>",
         keys = { "n", "<leader>fb" },
         set = false,
       },
       {
-        desc = "Telescope: Commands Command palette",
+        desc = "Search Commands",
         cmd = "<CMD>Telescope commands<CR>",
         keys = { "n", "<leader>fc" },
         set = false,
       },
       {
-        desc = "Git Preview Hunk Inline Show current hunk changes inline",
-        cmd = "<CMD>Gitsigns preview_hunk_inline<CR>",
-      },
-      {
-        desc = "Git Preview Hunk Popup Show current hunk changes in popup",
-        cmd = "<CMD>Gitsigns preview_hunk<CR>",
-      },
-      {
-        desc = "Git Toggle Line Blame Show blame for current line",
-        cmd = "<CMD>Gitsigns toggle_current_line_blame<CR>",
-      },
-      {
-        desc = "Telescope: Git Status Project changes list",
+        desc = "Search Git Changes",
         cmd = "<CMD>Telescope git_status<CR>",
         keys = { "n", "<leader>fs" },
         set = false,
       },
       {
-        desc = "Telescope: Git Commits Repository history",
+        desc = "Search Git Commits",
         cmd = "<CMD>Telescope git_commits<CR>",
         keys = { "n", "<leader>fG" },
         set = false,
       },
       {
-        desc = "Telescope: Git Buffer Commits Current file history",
+        desc = "Search Buffer Commits",
         cmd = "<CMD>Telescope git_bcommits<CR>",
         keys = { "n", "<leader>fB" },
         set = false,
+      },
+      {
+        desc = "Search Todos",
+        cmd = "<CMD>TodoTelescope<CR>",
+        keys = { "n", "<leader>ft" },
+      },
+      {
+        desc = "Jump to Next Diagnostic",
+        cmd = function() vim.diagnostic.goto_next() end,
+        keys = { "n", "]d" },
+      },
+      {
+        desc = "Jump to Previous Diagnostic",
+        cmd = function() vim.diagnostic.goto_prev() end,
+        keys = { "n", "[d" },
+      },
+      {
+        desc = "Jump to Next Todo",
+        cmd = function() require("todo-comments").jump_next() end,
+        keys = { "n", "]t" },
+      },
+      {
+        desc = "Jump to Previous Todo",
+        cmd = function() require("todo-comments").jump_prev() end,
+        keys = { "n", "[t" },
+      },
+      {
+        desc = "Open Oil File Manager",
+        cmd = "<CMD>Oil<CR>",
+        keys = { "n", "<leader>o" },
+      },
+      {
+        desc = "Open New Tab",
+        cmd = "<CMD>tabnew<CR>",
+      },
+      {
+        desc = "Open New Buffer",
+        cmd = "<CMD>enew<CR>",
+      },
+      {
+        desc = "Open Todo Quickfix",
+        cmd = "<CMD>TodoQuickFix<CR>",
+      },
+      {
+        desc = "Preview Hunk Inline",
+        cmd = "<CMD>Gitsigns preview_hunk_inline<CR>",
+      },
+      {
+        desc = "Preview Hunk Popup",
+        cmd = "<CMD>Gitsigns preview_hunk<CR>",
+      },
+      {
+        desc = "Toggle Line Blame",
+        cmd = "<CMD>Gitsigns toggle_current_line_blame<CR>",
       },
       {
         desc = "Enable Line Wrap",
@@ -123,42 +150,15 @@ return {
         cmd = "<CMD>set nowrap<CR>",
       },
       {
-        desc = "New Tab",
-        cmd = "<CMD>tabnew<CR>",
-      },
-      {
-        desc = "New Buffer",
-        cmd = "<CMD>enew<CR>",
-      },
-      {
-        desc = "Next Todo Go to next todo comment",
-        cmd = function() require("todo-comments").jump_next() end,
-        keys = { "n", "]t" },
-      },
-      {
-        desc = "Previous Todo Go to previous todo comment",
-        cmd = function() require("todo-comments").jump_prev() end,
-        keys = { "n", "[t" },
-      },
-      {
-        desc = "Todo QuickFix Load todos into quickfix list",
-        cmd = "<CMD>TodoQuickFix<CR>",
-      },
-      {
-        desc = "Telescope search todos",
-        cmd = "<CMD>TodoTelescope<CR>",
-        keys = { "n", "<leader>ft" },
-      },
-      {
-        desc = "Copilot Enable Suggestions",
+        desc = "Enable Copilot",
         cmd = "<CMD>Copilot enable<CR>",
       },
       {
-        desc = "Copilot Disable Suggestions", 
+        desc = "Disable Copilot", 
         cmd = "<CMD>Copilot disable<CR>",
       },
       {
-        desc = "Copilot Show Status",
+        desc = "Show Copilot Status",
         cmd = "<CMD>Copilot status<CR>",
       },
     })
