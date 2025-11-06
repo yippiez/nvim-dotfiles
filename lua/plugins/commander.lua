@@ -161,6 +161,12 @@ return {
         desc = "Show Copilot Status",
         cmd = "<CMD>Copilot status<CR>",
       },
+      {
+        desc = "List Buffer Diagnostics",
+        cmd = function()
+          vim.diagnostic.setloclist({ bufnr = 0, open = true })
+        end,
+      },
     })
     
     -- Set keybinding to directly launch commander
