@@ -72,6 +72,12 @@ return {
       {
         desc = "Search Git Changes",
         cmd = "<CMD>Telescope git_status<CR>",
+        keys = { "n", "<leader>fS" },
+        set = false,
+      },
+      {
+        desc = "Search Symbols",
+        cmd = "<CMD>Telescope lsp_document_symbols<CR>",
         keys = { "n", "<leader>fs" },
         set = false,
       },
