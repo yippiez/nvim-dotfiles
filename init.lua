@@ -21,6 +21,9 @@ vim.opt.softtabstop = 4
 vim.opt.number = true
 vim.opt.relativenumber = true
 
+-- Disable line wrapping by default
+vim.opt.wrap = false
+
 -- Fold settings to save manual folds
 vim.opt.foldmethod = "manual"
 vim.opt.viewoptions = "folds,cursor"
