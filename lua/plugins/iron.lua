@@ -24,13 +24,13 @@ return {
                 end,
                 repl_open_cmd = {
                     view.split.vertical.rightbelow("50%"), -- Right 50% split (rr)
-                    view.bottom("50%") -- Bottom 50% split (rb)
+                    view.split.vertical.rightbelow("100%"), -- Full "100%" split (rR) 
                 },
             },
             keymaps = {
                 toggle_repl_with_cmd_1 = "<leader>rr", -- Right split
-                toggle_repl_with_cmd_2 = "<leader>rB", -- Bottom split
-                restart_repl = "<leader>rR",
+                toggle_repl_with_cmd_2 = "<leader>rR", -- Wide right split
+                restart_repl = "<leader>rf",
                 send_line = "<leader>rl",
                 visual_send = "<leader>rl",
                 send_code_block = "<leader>rb", -- Send block to REPL
@@ -46,8 +46,8 @@ return {
         local wk = require("which-key")
         wk.add({
             { "<leader>rr", desc = "Toggle REPL (right split)" },
-            { "<leader>rB", desc = "Toggle REPL (bottom split)" },
-            { "<leader>rR", desc = "Restart REPL" },
+            { "<leader>rR", desc = "Toggle REPL (wide right split)" },
+            { "<leader>rf", desc = "Force restart REPL" },
             { "<leader>rl", desc = "Send line to REPL" },
             { "<leader>rl", desc = "Send selection to REPL", mode = "v" },
             { "<leader>rb", desc = "Send code block to REPL" },
@@ -62,3 +62,4 @@ return {
         vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
     end,
 }
+
