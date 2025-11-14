@@ -38,7 +38,7 @@ end
 
 -- Initialize theme default
 function M.init()
-    M.set_theme("tokyonight")
+    M.set_theme("vague")
 end
 
 -- Create theme selector for telescope
