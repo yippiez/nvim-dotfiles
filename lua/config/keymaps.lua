@@ -45,7 +45,7 @@ vim.keymap.set('n', '<leader>q', '<CMD>bd<CR>', { desc = 'Close buffer' })
 
 -- Comment toggle with Leader+cc
 vim.keymap.set('n', '<leader>cc', function()
-  require('Comment.api').toggle.linewise.current()
+    require('Comment.api').toggle.linewise.current()
 end, { desc = 'Comment toggle current line' })
 vim.keymap.set('v', '<leader>cc', "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", { desc = 'Comment toggle selection' })
 
@@ -64,12 +64,13 @@ vim.keymap.set('v', '<M-Right>', 'xlp`[v`]', { desc = 'Move selection right', si
 
 -- Run script - looks for run.sh, scripts/run.sh, run.py, or scripts/run.py
 vim.keymap.set('n', '<leader>x', function()
-  local scripts = {'./run.sh', './scripts/run.sh', './run.py', './scripts/run.py'}
-  for _, script in ipairs(scripts) do
-    if vim.fn.filereadable(script) == 1 then
-      vim.cmd('!' .. script)
-      return
+    local scripts = {'./run.sh', './scripts/run.sh', './run.py', './scripts/run.py'}
+    for _, script in ipairs(scripts) do
+        if vim.fn.filereadable(script) == 1 then
+            vim.cmd('!' .. script)
+            return
+        end
     end
-  end
-  print('No run script found (checked: run.sh, scripts/run.sh, run.py, scripts/run.py)')
+    print('No run script found (checked: run.sh, scripts/run.sh, run.py, scripts/run.py)')
 end, { desc = 'Execute available run script', silent = false })
+

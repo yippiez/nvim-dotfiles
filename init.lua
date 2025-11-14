@@ -27,15 +27,15 @@ vim.opt.viewoptions = "folds,cursor"
 
 -- Auto-save and restore folds
 vim.api.nvim_create_autocmd({"BufWinLeave"}, {
-  pattern = {"*.*"},
-  desc = "save view (folds), when closing file",
-  command = "mkview",
+    pattern = {"*.*"},
+    desc = "save view (folds), when closing file",
+    command = "mkview",
 })
 
 vim.api.nvim_create_autocmd({"BufWinEnter"}, {
-  pattern = {"*.*"},
-  desc = "load view (folds), when opening file",
-  command = "silent! loadview"
+    pattern = {"*.*"},
+    desc = "load view (folds), when opening file",
+    command = "silent! loadview"
 })
 
 -- Initialize theme system
