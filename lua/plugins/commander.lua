@@ -1,3 +1,4 @@
+-- https://github.com/FeiyouG/commander.nvim
 return {
   "FeiyouG/commander.nvim",
   dependencies = { "nvim-telescope/telescope.nvim" },

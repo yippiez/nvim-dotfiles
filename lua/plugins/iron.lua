@@ -1,5 +1,4 @@
--- Sourc https://github.com/Vigemus/iron.nvim
-
+-- https://github.com/Vigemus/iron.nvim
 return {
   'Vigemus/iron.nvim',
   config = function()

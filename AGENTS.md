@@ -7,6 +7,7 @@ This is a modular Neovim configuration using lazy.nvim plugin manager.
 - After implementing a plugin run nvim headless to test plugin if possible
 - For simple plugins (no custom config), add their specs directly to `init.lua` inside the `require("lazy").setup({...})` block instead of creating a separate file.
 - Only create a separate file in `lua/plugins/` for plugins that require custom configuration or setup logic.
+- Each plugin file in `lua/plugins/` should include the GitHub repository URL as the first line comment in the format `-- https://github.com/user/repo`
 
 ### Core Configuration
 - `init.lua` - Entry point, loads config modules and sets global options

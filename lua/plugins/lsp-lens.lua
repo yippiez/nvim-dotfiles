@@ -1,3 +1,4 @@
+-- https://github.com/VidocqH/lsp-lens.nvim
 return {
   'VidocqH/lsp-lens.nvim',
   event = 'LspAttach',

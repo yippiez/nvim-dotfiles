@@ -1,3 +1,4 @@
+-- https://github.com/brenton-leighton/multiple-cursors.nvim
 return {
   "brenton-leighton/multiple-cursors.nvim",
   version = "*",  -- Use the latest tagged version
