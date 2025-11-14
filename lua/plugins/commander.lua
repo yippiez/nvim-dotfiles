@@ -175,6 +175,18 @@ return {
                 end,
             },
             {
+                desc = "Restart LSP Server",
+                cmd = function() 
+                    if vim.api.nvim_buf_get_name(0) == "" then return end
+                    local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+                    if #clients == 0 then return end
+                    for _, client in ipairs(clients) do
+                        vim.lsp.stop_client(client.id)
+                    end
+                    vim.cmd("edit")
+                end,
+            },
+            {
                 desc = "Change Theme",
                 cmd = function() require("config.themes").theme_selector() end,
             },
