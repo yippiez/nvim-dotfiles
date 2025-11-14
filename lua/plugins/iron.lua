@@ -29,10 +29,11 @@ return {
             },
             keymaps = {
                 toggle_repl_with_cmd_1 = "<leader>rr", -- Right split
-                toggle_repl_with_cmd_2 = "<leader>rb", -- Bottom split
+                toggle_repl_with_cmd_2 = "<leader>rB", -- Bottom split
                 restart_repl = "<leader>rR",
                 send_line = "<leader>rl",
                 visual_send = "<leader>rl",
+                send_code_block = "<leader>rb", -- Send block to REPL
                 interrupt = "<leader>ri",
             },
             highlight = {
@@ -45,10 +46,11 @@ return {
         local wk = require("which-key")
         wk.add({
             { "<leader>rr", desc = "Toggle REPL (right split)" },
-            { "<leader>rb", desc = "Toggle REPL (bottom split)" },
+            { "<leader>rB", desc = "Toggle REPL (bottom split)" },
             { "<leader>rR", desc = "Restart REPL" },
             { "<leader>rl", desc = "Send line to REPL" },
             { "<leader>rl", desc = "Send selection to REPL", mode = "v" },
+            { "<leader>rb", desc = "Send code block to REPL" },
             { "<leader>ri", desc = "Interrupt REPL" },
         })
 
