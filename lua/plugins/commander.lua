@@ -174,6 +174,18 @@ return {
           vim.diagnostic.setloclist({ bufnr = 0, open = true })
         end,
       },
+      {
+        desc = "Change Theme",
+        cmd = function() require("config.themes").theme_selector() end,
+      },
+      {
+        desc = "Set Tokyo Night Theme",
+        cmd = function() require("config.themes").set_theme("tokyonight") end,
+      },
+      {
+        desc = "Set Vague Theme",
+        cmd = function() require("config.themes").set_theme("vague") end,
+      },
     })
     
     -- Set keybinding to directly launch commander

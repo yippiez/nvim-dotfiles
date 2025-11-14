@@ -38,5 +38,6 @@ vim.api.nvim_create_autocmd({"BufWinEnter"}, {
   command = "silent! loadview"
 })
 
-vim.cmd.colorscheme("tokyonight")
+-- Initialize theme system
+require("config.themes").init()
 
