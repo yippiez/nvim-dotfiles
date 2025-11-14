@@ -12,6 +12,9 @@ return {
             "size",
         },
         use_default_keymaps = true,
+        win_options = {
+            cursorline = false,
+        },
         keymaps = {
             -- Override C-p to avoid conflict with commander
             ["<C-p>"] = false,
