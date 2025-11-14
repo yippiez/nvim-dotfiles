@@ -5,7 +5,7 @@ return {
   ---@type oil.SetupOpts
   opts = {
     view_options = {
-      show_hidden = false,
+      show_hidden = true,
     },
     -- Show only size column
     columns = {
