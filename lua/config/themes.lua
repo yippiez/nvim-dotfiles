@@ -36,11 +36,6 @@ function M.get_available()
     return M.themes
 end
 
--- Initialize theme default
-function M.init()
-    M.set_theme("vague")
-end
-
 -- Create theme selector for telescope
 function M.theme_selector()
     local pickers = require("telescope.pickers")

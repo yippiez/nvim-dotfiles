@@ -41,6 +41,6 @@ vim.api.nvim_create_autocmd({"BufWinEnter"}, {
     command = "silent! loadview"
 })
 
--- Initialize theme system
-require("config.themes").init()
+-- Initialize theme 
+vim.cmd.colorscheme("vague")
 
