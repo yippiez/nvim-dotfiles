@@ -30,7 +30,7 @@ return {
             keymaps = {
                 toggle_repl_with_cmd_1 = "<leader>rr", -- Right split
                 toggle_repl_with_cmd_2 = "<leader>rR", -- Wide right split
-                restart_repl = "<leader>rf",
+                restart_repl = "<leader>rF",
                 send_line = "<leader>rl",
                 visual_send = "<leader>rl",
                 send_code_block = "<leader>rb", -- Send block to REPL
@@ -47,7 +47,7 @@ return {
         wk.add({
             { "<leader>rr", desc = "Toggle REPL (right split)" },
             { "<leader>rR", desc = "Toggle REPL (wide right split)" },
-            { "<leader>rf", desc = "Force restart REPL" },
+            { "<leader>rF", desc = "Force restart REPL" },
             { "<leader>rl", desc = "Send line to REPL" },
             { "<leader>rl", desc = "Send selection to REPL", mode = "v" },
             { "<leader>rb", desc = "Send code block to REPL" },
