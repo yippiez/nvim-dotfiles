@@ -194,11 +194,23 @@ return {
                 desc = "Set Tokyo Night Theme",
                 cmd = function() require("config.themes").set_theme("tokyonight") end,
             },
+             {
+                 desc = "Set Vague Theme",
+                 cmd = function() require("config.themes").set_theme("vague") end,
+             },
+             {
+                 desc = "Show Diff",
+                 cmd = "<CMD>Gitsigns diffthis<CR>",
+             },
+             {
+                 desc = "Show Diff with HEAD",
+                 cmd = "<CMD>Gitsigns diffthis ~<CR>",
+             },
             {
-                desc = "Set Vague Theme",
-                cmd = function() require("config.themes").set_theme("vague") end,
+                desc = "Toggle Diff",
+                cmd = "<CMD>Gitsigns toggle_word_diff<CR>",
             },
-        })
+         })
         
         -- Set keybinding to directly launch commander
         vim.keymap.set("n", "<C-p>", function()
