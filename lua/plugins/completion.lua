@@ -15,7 +15,21 @@ return {
                 ['<C-d>'] = cmp.mapping.scroll_docs(-4),
                 ['<C-f>'] = cmp.mapping.scroll_docs(4),
                 ['<M-.>'] = cmp.mapping.complete(),
-                ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                ['<CR>'] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        if cmp.get_selected_entry() then
+                            -- Item is selected: confirm and add space
+                            cmp.confirm({ select = false })
+                            vim.api.nvim_feedkeys(' ', 'n', true)
+                        else
+                            -- Nothing selected: abort and newline
+                            cmp.abort()
+                            fallback()
+                        end
+                    else
+                        fallback()
+                    end
+                end),
                 ['<Tab>'] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         cmp.select_next_item()
