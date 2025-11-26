@@ -2,6 +2,7 @@
 return {
     "FeiyouG/commander.nvim",
     dependencies = { "nvim-telescope/telescope.nvim" },
+    event = "VeryLazy",
     config = function()
         require("commander").setup({
             components = {
