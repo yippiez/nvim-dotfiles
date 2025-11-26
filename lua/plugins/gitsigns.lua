@@ -32,7 +32,7 @@ return {
             attach_to_untracked = false,
             current_line_blame = false,
             sign_priority = 6,
-            update_debounce = 100,
+            update_debounce = 200,
             max_file_length = 40000,
             -- No keymaps - visual only
             on_attach = function(bufnr)

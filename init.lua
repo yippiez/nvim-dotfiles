@@ -1,3 +1,9 @@
+-- Performance settings
+vim.opt.lazyredraw = true
+vim.opt.updatetime = 300
+vim.opt.timeoutlen = 500
+vim.opt.ttimeoutlen = 50
+
 require("config.lazy")
 require("config.keymaps")
 
@@ -28,17 +34,25 @@ vim.opt.wrap = false
 vim.opt.foldmethod = "manual"
 vim.opt.viewoptions = "folds,cursor"
 
--- Auto-save and restore folds
+-- Auto-save and restore folds (only for actual files, limited patterns)
 vim.api.nvim_create_autocmd({"BufWinLeave"}, {
-    pattern = {"*.*"},
+    pattern = {"*.py", "*.js", "*.ts", "*.jsx", "*.tsx", "*.svelte", "*.lua", "*.md"},
     desc = "save view (folds), when closing file",
-    command = "mkview",
+    callback = function()
+        if vim.fn.expand("%") ~= "" and vim.bo.buftype == "" then
+            vim.cmd("mkview")
+        end
+    end,
 })
 
 vim.api.nvim_create_autocmd({"BufWinEnter"}, {
-    pattern = {"*.*"},
+    pattern = {"*.py", "*.js", "*.ts", "*.jsx", "*.tsx", "*.svelte", "*.lua", "*.md"},
     desc = "load view (folds), when opening file",
-    command = "silent! loadview"
+    callback = function()
+        if vim.fn.expand("%") ~= "" and vim.bo.buftype == "" then
+            vim.cmd("silent! loadview")
+        end
+    end,
 })
 
 -- Initialize theme 
