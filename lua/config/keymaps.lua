@@ -32,6 +32,20 @@ vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'Go to references' })
 vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename, { desc = 'Rename symbol' })
 vim.keymap.set('n', '<leader>le', vim.diagnostic.open_float, { desc = 'Show diagnostic popup' })
 vim.keymap.set('n', '<leader>la', vim.lsp.buf.hover, { desc = 'Show LSP hover info' })
+vim.keymap.set('n', '<leader>lc', function()
+    local diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line('.') - 1 })
+    if #diagnostics == 0 then
+        print('No diagnostics on current line')
+        return
+    end
+    local messages = {}
+    for _, d in ipairs(diagnostics) do
+        table.insert(messages, d.message)
+    end
+    local text = table.concat(messages, '\n')
+    vim.fn.setreg('+', text)
+    print('Copied: ' .. text)
+end, { desc = 'Copy diagnostic to clipboard' })
 
 -- Navigate diagnostics/errors
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic' })
