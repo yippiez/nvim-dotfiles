@@ -18,9 +18,8 @@ return {
                 ['<CR>'] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         if cmp.get_selected_entry() then
-                            -- Item is selected: confirm and add space
+                            local entry = cmp.get_selected_entry()
                             cmp.confirm({ select = false })
-                            vim.api.nvim_feedkeys(' ', 'n', true)
                         else
                             -- Nothing selected: abort and newline
                             cmp.abort()

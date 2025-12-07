@@ -47,7 +47,6 @@ vim.api.nvim_create_autocmd("CursorHold", {
 -- Lazy-load LSP configurations
 local function setup_lsp()
     -- Python LSP configuration
-    vim.lsp.enable('pyright')
     vim.lsp.config('pyright', {
         cmd = { 'pyright-langserver', '--stdio' },
         filetypes = { 'python' },
@@ -62,9 +61,9 @@ local function setup_lsp()
             },
         },
     })
+    vim.lsp.enable('pyright')
 
     -- TypeScript/JavaScript LSP configuration
-    vim.lsp.enable('ts_ls')
     vim.lsp.config('ts_ls', {
         cmd = { 'typescript-language-server', '--stdio' },
         filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
@@ -94,9 +93,27 @@ local function setup_lsp()
             },
         },
     })
+    vim.lsp.enable('ts_ls')
+
+    -- Rust LSP configuration
+    vim.lsp.config('rust_analyzer', {
+        cmd = { vim.fn.expand('~/.local/bin/rust-analyzer') },
+        filetypes = { 'rust' },
+        root_markers = { 'Cargo.toml', 'Cargo.lock', '.git' },
+        settings = {
+            ['rust-analyzer'] = {
+                cargo = {
+                    loadOutDirsFromCheck = true,
+                },
+                procMacro = {
+                    enable = true,
+                },
+            },
+        },
+    })
+    vim.lsp.enable('rust_analyzer')
 
     -- Svelte LSP configuration
-    vim.lsp.enable('svelte')
     vim.lsp.config('svelte', {
         cmd = { 'svelteserver', '--stdio' },
         filetypes = { 'svelte' },
@@ -111,10 +128,11 @@ local function setup_lsp()
             },
         },
     })
+    vim.lsp.enable('svelte')
 end
 
 -- Setup LSP on FileType events
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "python", "javascript", "typescript", "javascriptreact", "typescriptreact", "svelte" },
+    pattern = { "python", "javascript", "typescript", "javascriptreact", "typescriptreact", "svelte", "rust" },
     callback = setup_lsp,
 })
