@@ -28,7 +28,7 @@ vim.diagnostic.config({
 
 -- Show diagnostic popup on hover with delay and only for relevant filetypes
 vim.api.nvim_create_autocmd("CursorHold", {
-    pattern = { "*.py", "*.js", "*.ts", "*.jsx", "*.tsx", "*.svelte" },
+    pattern = { "*.py", "*.js", "*.ts", "*.jsx", "*.tsx", "*.svelte", "*.go" },
     callback = function()
         vim.defer_fn(function()
             local opts = {
@@ -44,95 +44,106 @@ vim.api.nvim_create_autocmd("CursorHold", {
     end
 })
 
--- Lazy-load LSP configurations
-local function setup_lsp()
-    -- Python LSP configuration
-    vim.lsp.config('pyright', {
-        cmd = { 'pyright-langserver', '--stdio' },
-        filetypes = { 'python' },
-        root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', '.git' },
-        settings = {
-            python = {
-                analysis = {
-                    autoSearchPaths = true,
-                    useLibraryCodeForTypes = true,
-                    diagnosticMode = 'workspace',
-                },
+-- Python LSP configuration
+vim.lsp.config('pyright', {
+    cmd = { 'pyright-langserver', '--stdio' },
+    filetypes = { 'python' },
+    root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', '.git' },
+    settings = {
+        python = {
+            analysis = {
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                diagnosticMode = 'workspace',
             },
         },
-    })
-    vim.lsp.enable('pyright')
-
-    -- TypeScript/JavaScript LSP configuration
-    vim.lsp.config('ts_ls', {
-        cmd = { 'typescript-language-server', '--stdio' },
-        filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
-        root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' },
-        settings = {
-            typescript = {
-                inlayHints = {
-                    includeInlayParameterNameHints = 'literal',
-                    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                    includeInlayFunctionParameterTypeHints = true,
-                    includeInlayVariableTypeHints = false,
-                    includeInlayPropertyDeclarationTypeHints = true,
-                    includeInlayFunctionLikeReturnTypeHints = true,
-                    includeInlayEnumMemberValueHints = true,
-                },
-            },
-            javascript = {
-                inlayHints = {
-                    includeInlayParameterNameHints = 'all',
-                    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                    includeInlayFunctionParameterTypeHints = true,
-                    includeInlayVariableTypeHints = true,
-                    includeInlayPropertyDeclarationTypeHints = true,
-                    includeInlayFunctionLikeReturnTypeHints = true,
-                    includeInlayEnumMemberValueHints = true,
-                },
-            },
-        },
-    })
-    vim.lsp.enable('ts_ls')
-
-    -- Rust LSP configuration
-    vim.lsp.config('rust_analyzer', {
-        cmd = { vim.fn.expand('~/.local/bin/rust-analyzer') },
-        filetypes = { 'rust' },
-        root_markers = { 'Cargo.toml', 'Cargo.lock', '.git' },
-        settings = {
-            ['rust-analyzer'] = {
-                cargo = {
-                    loadOutDirsFromCheck = true,
-                },
-                procMacro = {
-                    enable = true,
-                },
-            },
-        },
-    })
-    vim.lsp.enable('rust_analyzer')
-
-    -- Svelte LSP configuration
-    vim.lsp.config('svelte', {
-        cmd = { 'svelteserver', '--stdio' },
-        filetypes = { 'svelte' },
-        root_markers = { 'package.json', 'svelte.config.js', 'svelte.config.mjs', 'svelte.config.cjs', '.git' },
-        settings = {
-            svelte = {
-                plugin = {
-                    html = { completions = { enable = true, emmet = false } },
-                    svelte = { completions = { enable = true, emmet = true } },
-                    css = { completions = { enable = true, emmet = true } },
-                },
-            },
-        },
-    })
-    vim.lsp.enable('svelte')
-end
-
--- Setup LSP on FileType events
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "python", "javascript", "typescript", "javascriptreact", "typescriptreact", "svelte", "rust" },
-    callback = setup_lsp,
+    },
 })
+
+-- TypeScript/JavaScript LSP configuration
+vim.lsp.config('ts_ls', {
+    cmd = { 'typescript-language-server', '--stdio' },
+    filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+    root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' },
+    settings = {
+        typescript = {
+            inlayHints = {
+                includeInlayParameterNameHints = 'literal',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = false,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+            },
+        },
+        javascript = {
+            inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+            },
+        },
+    },
+})
+
+-- Rust LSP configuration
+vim.lsp.config('rust_analyzer', {
+    cmd = { vim.fn.expand('~/.local/bin/rust-analyzer') },
+    filetypes = { 'rust' },
+    root_markers = { 'Cargo.toml', 'Cargo.lock', '.git' },
+    settings = {
+        ['rust-analyzer'] = {
+            cargo = {
+                loadOutDirsFromCheck = true,
+            },
+            procMacro = {
+                enable = true,
+            },
+        },
+    },
+})
+
+-- Svelte LSP configuration
+vim.lsp.config('svelte', {
+    cmd = { 'svelteserver', '--stdio' },
+    filetypes = { 'svelte' },
+    root_markers = { 'package.json', 'svelte.config.js', 'svelte.config.mjs', 'svelte.config.cjs', '.git' },
+    settings = {
+        svelte = {
+            plugin = {
+                html = { completions = { enable = true, emmet = false } },
+                svelte = { completions = { enable = true, emmet = true } },
+                css = { completions = { enable = true, emmet = true } },
+            },
+        },
+    },
+})
+
+-- Go LSP configuration
+vim.lsp.config('gopls', {
+    cmd = { 'gopls' },
+    filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+    root_markers = { 'go.work', 'go.mod', '.git' },
+    settings = {
+        gopls = {
+            analyses = {
+                unusedparams = true,
+                shadow = true,
+            },
+            staticcheck = true,
+            gofumpt = true,
+        },
+    },
+})
+
+-- Enable all LSP servers (they auto-attach based on filetypes)
+vim.lsp.enable('pyright')
+vim.lsp.enable('ts_ls')
+vim.lsp.enable('rust_analyzer')
+vim.lsp.enable('svelte')
+vim.lsp.enable('gopls')
