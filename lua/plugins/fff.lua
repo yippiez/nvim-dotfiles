@@ -9,14 +9,18 @@ return {
         prompt = '> ',
         title = 'Files',
         layout = {
-            height = 0.4,
-            width = 0.5,
+            height = 0.6,
+            width = 0.9,
             prompt_position = 'top',
             preview_position = 'right',
             preview_size = 0.5,
         },
         preview = {
-            enabled = false,
+            enabled = true,
+            max_size = 10 * 1024 * 1024,
+            line_numbers = true,
+            wrap_lines = false,
+            show_file_info = true,
         },
         debug = {
             enabled = false,
@@ -26,7 +30,7 @@ return {
     keys = {
         {
             "<leader>ff",
-            function() require('fff').find_files() end,
+            function() require('fff').find_in_git_root() end,
             desc = 'Find files',
         },
     },
