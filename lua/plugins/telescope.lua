@@ -38,6 +38,18 @@ return {
                 buffers = {
                     disable_devicons = true,
                 },
+                git_status = {
+                    prompt_title = "Git Status (staged | unstaged)",
+                    git_icons = {
+                        added = "+",
+                        changed = "~",
+                        copied = "+",
+                        deleted = "-",
+                        renamed = "→",
+                        unmerged = "!",
+                        untracked = "?",
+                    },
+                },
             },
         })
     end,
