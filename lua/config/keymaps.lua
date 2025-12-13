@@ -66,16 +66,3 @@ vim.keymap.set('v', '<M-Down>', ':m \'>+1<CR>gv=gv', { desc = 'Move selection do
 -- Move text left/right with Alt+arrow keys
 vim.keymap.set('v', '<M-Left>', 'xhP`[v`]', { desc = 'Move selection left', silent = true })
 vim.keymap.set('v', '<M-Right>', 'xlp`[v`]', { desc = 'Move selection right', silent = true })
-
--- Run script - looks for run.sh, scripts/run.sh, run.py, or scripts/run.py
-vim.keymap.set('n', '<leader>x', function()
-    local scripts = {'./run.sh', './scripts/run.sh', './run.py', './scripts/run.py'}
-    for _, script in ipairs(scripts) do
-        if vim.fn.filereadable(script) == 1 then
-            vim.cmd('!' .. script)
-            return
-        end
-    end
-    print('No run script found (checked: run.sh, scripts/run.sh, run.py, scripts/run.py)')
-end, { desc = 'Execute available run script', silent = false })
-
