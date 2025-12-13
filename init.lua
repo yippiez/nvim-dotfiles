@@ -57,5 +57,5 @@ vim.api.nvim_create_autocmd({"BufWinEnter"}, {
 })
 
 -- Initialize theme 
-vim.cmd.colorscheme("vague")
+vim.cmd.colorscheme("tokyonight")
 
