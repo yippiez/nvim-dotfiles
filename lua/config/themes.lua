@@ -2,8 +2,14 @@ local M = {}
 
 -- Available themes
 M.themes = {
-    "tokyonight",
-    "vague",
+    "Tokyonight",
+    "Vague",
+}
+
+-- Map display names to actual colorscheme names
+M.theme_map = {
+    Tokyonight = "tokyonight",
+    Vague = "vague",
 }
 
 -- Get the current theme
@@ -20,8 +26,11 @@ function M.set_theme(theme_name)
         return false
     end
     
+    -- Get the actual colorscheme name
+    local actual_theme = M.theme_map[theme_name]
+    
     -- Set the colorscheme
-    local ok, err = pcall(vim.cmd.colorscheme, theme_name)
+    local ok, err = pcall(vim.cmd.colorscheme, actual_theme)
     if not ok then
         vim.notify("Failed to load theme '" .. theme_name .. "': " .. err, vim.log.levels.ERROR)
         return false
@@ -60,5 +69,15 @@ function M.theme_selector()
         end,
     }):find()
 end
+
+-- Create the :SetTheme command
+vim.api.nvim_create_user_command("SetTheme", function(opts)
+    M.set_theme(opts.args)
+end, {
+    nargs = 1,
+    complete = function()
+        return M.themes
+    end
+})
 
 return M

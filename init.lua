@@ -7,6 +7,7 @@ vim.opt.ttimeoutlen = 50
 require("config.lazy")
 require("config.keymaps")
 require("config.autocmds")
+require("config.themes")
 
 -- Only load win32yank on Windows/WSL
 if vim.fn.has('win32') == 1 or vim.fn.has('wsl') == 1 then
