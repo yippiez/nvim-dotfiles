@@ -1,6 +1,7 @@
 -- https://github.com/mfussenegger/nvim-dap
 return {
     'mfussenegger/nvim-dap',
+    event = "VeryLazy",
     dependencies = {
         'nvim-neotest/nvim-nio',
     },

@@ -1,6 +1,7 @@
 -- https://github.com/yippiez/oil-git.nvim
 return {
     "yippiez/oil-git.nvim",
+    ft = "oil",
     dependencies = { "stevearc/oil.nvim" },
     config = function()
         local function set_oil_git_highlights()

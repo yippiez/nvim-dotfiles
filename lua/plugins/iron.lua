@@ -1,6 +1,16 @@
 -- https://github.com/Vigemus/iron.nvim
 return {
     'Vigemus/iron.nvim',
+    keys = {
+        { "<leader>rr", desc = "Toggle REPL (right split)" },
+        { "<leader>rR", desc = "Toggle REPL (wide right split)" },
+        { "<leader>rF", desc = "Force restart REPL" },
+        { "<leader>rl", mode = { "n", "v" }, desc = "Send line/selection to REPL" },
+        { "<leader>rb", desc = "Send code block to REPL" },
+        { "<leader>ri", desc = "Interrupt REPL" },
+        { "<leader>rf", desc = "Focus REPL" },
+        { "<leader>rh", desc = "Hide REPL" },
+    },
     config = function()
         local iron = require("iron.core")
         local view = require("iron.view")
@@ -62,4 +72,3 @@ return {
         vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
     end,
 }
-

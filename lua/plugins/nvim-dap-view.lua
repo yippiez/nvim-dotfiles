@@ -2,6 +2,7 @@
 return {
     "igorlfs/nvim-dap-view",
     version = false,
+    event = "VeryLazy",
     dependencies = { "mfussenegger/nvim-dap" },
     opts = {
         winbar = {

@@ -1,6 +1,9 @@
 -- https://github.com/nvimtools/hydra.nvim
 return {
     'nvimtools/hydra.nvim',
+    keys = {
+        { "<leader>md", desc = "Toggle Debug Mode" },
+    },
     config = function()
         local Hydra = require('hydra')
 
