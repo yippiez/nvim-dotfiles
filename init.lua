@@ -1,6 +1,5 @@
--- Single-file Neovim configuration
--- Compressed from modular config
 
+-- Set Leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
