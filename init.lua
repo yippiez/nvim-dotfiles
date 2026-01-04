@@ -105,7 +105,6 @@ local map = vim.keymap.set
 map("i", "jk", "<Esc>")
 map("n", "<Esc>", ":noh<CR>", { silent = true })
 map({ "n", "i" }, "<C-s>", "<cmd>w<CR>")
-map("n", "<leader>q", ":bd<CR>", { silent = true })
 
 -- LSP
 map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
