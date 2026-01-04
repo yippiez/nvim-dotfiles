@@ -1,43 +1,27 @@
 ## Repository Structure
 
-This is a modular Neovim configuration using lazy.nvim plugin manager.
+This is a single-file Neovim configuration using lazy.nvim plugin manager.
 
 ### Rules
 - When given a github URL fetch it and try to implement the plugin
 - After implementing a plugin run nvim headless to test plugin if possible
-- For simple plugins (no custom config), add their specs directly to `init.lua` inside the `require("lazy").setup({...})` block instead of creating a separate file.
-- Only create a separate file in `lua/plugins/` for plugins that require custom configuration or setup logic.
-- Each plugin file in `lua/plugins/` should include the GitHub repository URL as the first line comment in the format `-- https://github.com/user/repo`
+- Add all plugin specs directly to `init.lua` inside the `require("lazy").setup({...})` block.
+- All configuration is contained in `init.lua`.
 
 ### Core Configuration
-- `init.lua` - Entry point, loads config modules and sets global options
-- `lua/config/` - Core configuration modules
-  - `lazy.lua` - Plugin manager setup
-  - `keymaps.lua` - Global keybindings
-  - `lsp.lua` - Language server configuration
-  - `win32yank.lua` - WSL clipboard integration
-
-### Plugins (`lua/plugins/`)
-- `colorscheme.lua` - Tokyo Night theme
-- `commander.lua` - Command palette (`<C-p>`) with predefined commands
-- `comment.lua` - Smart commenting (no keybindings)
-- `completion.lua` - nvim-cmp autocompletion with LSP/buffer sources
-- `gitsigns.lua` - Git change indicators (visual only)
-- `iron.lua` - REPL integration (`<leader>r*` keybindings)
-- `lualine.lua` - Status line with git and LSP integration
-- `flash.lua` - Fast navigation and jumping (`s`, `S` keys)
-- `multicursor.lua` - Multiple cursor editing (`gb` to add cursors)
-- `oil.lua` - File manager treating directories as buffers
-- `telescope.lua` - Fuzzy finder (integrated with commander)
-- `treesitter.lua` - Syntax highlighting (`gnn`, `grn` for selections)
-- `which-key.lua` - Keybinding help popup
+- `init.lua` - Single entry point containing all options, autocmds, keymaps, plugins, and LSP configuration.
 
 ### Key Features
-- Commander plugin centralizes most commands instead of individual keybindings
-- **Command Palette**: `<C-p>` opens commander with all main actions
+- **Fuzzy Finder**: Telescope plugin for file search, live grep, buffers, etc. (`<leader>f*` keybindings)
 - **File Management**: Oil plugin (`<leader>o`) for directory editing
-- **REPL Integration**: Iron plugin for interactive code execution
-- **Multiple Cursors**: `gb` adds cursors to matching words
+- **REPL Integration**: Iron plugin for interactive code execution (`<leader>r*` keybindings)
+- **Fast Navigation**: Flash plugin (`s`, `S` keys)
+- **Window Management**: Hydra plugin (`<C-w>`)
+- **Debugging**: DAP and DAP View with Hydra debug mode (`<leader>md`)
+- **Status Line**: Lualine with git and LSP integration
+- **AI Completion**: Copilot for intelligent code suggestions
+- **Syntax Highlighting**: Treesitter with incremental selection (`gnn`, `grn`)
 - **Auto-fold Persistence**: Manual folds saved/restored automatically
 - **WSL Clipboard**: Integrated clipboard support for Windows
+
 

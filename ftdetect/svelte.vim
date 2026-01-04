@@ -1,1 +1,0 @@
-au BufRead,BufNewFile *.svelte set filetype=svelte
