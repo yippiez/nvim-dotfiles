@@ -271,7 +271,6 @@ local plugins = {
       map("n", "<leader>fc", builtin.commands, { desc = "Commands" })
       map("n", "<leader>fS", builtin.git_status, { desc = "Git status" })
       map("n", "<leader>fs", builtin.lsp_document_symbols, { desc = "Document symbols" })
-      map("n", "<leader>fG", builtin.git_commits, { desc = "Git commits" })
       map("n", "<leader>fB", builtin.git_bcommits, { desc = "Buffer commits" })
     end,
   },
