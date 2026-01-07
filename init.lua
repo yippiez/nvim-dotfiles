@@ -106,6 +106,14 @@ map("i", "jk", "<Esc>")
 map("n", "<Esc>", ":noh<CR>", { silent = true })
 map({ "n", "i" }, "<C-s>", "<cmd>w<CR>")
 
+-- Git change navigation
+map("n", "]c", function()
+  require("gitsigns").next_hunk()
+end, { desc = "Next git hunk" })
+map("n", "[c", function()
+  require("gitsigns").prev_hunk()
+end, { desc = "Previous git hunk" })
+
 -- LSP
 map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 map("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
