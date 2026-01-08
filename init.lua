@@ -256,6 +256,12 @@ local plugins = {
     end,
   },
 
+  -- LSP core
+  {
+    "neovim/nvim-lspconfig",
+    lazy = false,
+  },
+
   -- Telescope
   {
     "nvim-telescope/telescope.nvim",
@@ -623,124 +629,114 @@ require("lazy").setup(plugins, {
 })
 
 -- ============================================================================
--- LSP Configuration
+-- LSP Configuration 
 -- ============================================================================
-local lspconfig_ok, lspconfig = pcall(require, "lspconfig")
-if lspconfig_ok then
-  -- Diagnostic configuration
-  vim.diagnostic.config({
-    virtual_text = {
-      source = "always",
-      prefix = "●",
-      format = function(d)
-        local msg = d.message:gsub("\n", " ")
-        return #msg > 50 and msg:sub(1, 47) .. "..." or msg
-      end,
-    },
-    float = { source = "always", wrap = true, border = "rounded" },
-    signs = true,
-    underline = true,
-    update_in_insert = false,
-    severity_sort = true,
-  })
-
-  -- LSP capabilities
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  local cmp_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-  if cmp_ok then
-    capabilities = cmp_lsp.default_capabilities(capabilities)
-  end
-
-  -- Pyright
-  lspconfig.pyright.setup({
-    capabilities = capabilities,
-    root_dir = lspconfig.util.root_pattern("pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", ".git"),
-    settings = {
-      python = {
-        analysis = {
-          autoSearchPaths = true,
-          useLibraryCodeForTypes = true,
-          diagnosticMode = "workspace",
-        },
-      },
-    },
-  })
-
-  -- TypeScript/JavaScript
-  lspconfig.ts_ls.setup({
-    capabilities = capabilities,
-    root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
-    settings = {
-      typescript = {
-        inlayHints = {
-          includeInlayParameterNameHints = "all",
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayFunctionLikeReturnTypeHints = true,
-          includeInlayEnumMemberValueHints = true,
-        },
-      },
-      javascript = {
-        inlayHints = {
-          includeInlayParameterNameHints = "all",
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayFunctionLikeReturnTypeHints = true,
-          includeInlayEnumMemberValueHints = true,
-        },
-      },
-    },
-  })
-
-  -- Rust Analyzer
-  lspconfig.rust_analyzer.setup({
-    capabilities = capabilities,
-    cmd = { vim.fn.expand("~/.local/bin/rust-analyzer") },
-    root_dir = lspconfig.util.root_pattern("Cargo.toml", "Cargo.lock", ".git"),
-    settings = {
-      ["rust-analyzer"] = {
-        cargo = { loadOutDirsFromCheck = true },
-        procMacro = { enable = true },
-      },
-    },
-  })
-
-  -- Svelte
-  lspconfig.svelte.setup({
-    capabilities = capabilities,
-    root_dir = lspconfig.util.root_pattern("package.json", "svelte.config.js", "svelte.config.mjs", "svelte.config.cjs", ".git"),
-    settings = {
-      svelte = {
-        plugin = {
-          html = { completions = { enable = true } },
-          svelte = { completions = { enable = true } },
-          css = { completions = { enable = true, emmet = true } },
-        },
-      },
-    },
-  })
-
-  -- Go
-  lspconfig.gopls.setup({
-    capabilities = capabilities,
-    root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
-    settings = {
-      gopls = {
-        analyses = { unusedparams = true, shadow = true },
-        staticcheck = true,
-        gofumpt = true,
-      },
-    },
-  })
-
-  -- Auto diagnostic float on CursorHold
-  api.nvim_create_autocmd("CursorHold", {
-    pattern = "*.py,*.js,*.ts,*.jsx,*.tsx,*.svelte,*.go",
-    callback = function()
-      vim.defer_fn(function()
-        vim.diagnostic.open_float(nil, { focusable = false })
-      end, 1000)
+-- Diagnostic configuration
+vim.diagnostic.config({
+  virtual_text = {
+    source = "always",
+    prefix = "●",
+    format = function(d)
+      local msg = d.message:gsub("\n", " ")
+      return #msg > 50 and msg:sub(1, 47) .. "..." or msg
     end,
-  })
+  },
+  float = { source = "always", wrap = true, border = "rounded" },
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+})
+
+-- LSP capabilities (global)
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local cmp_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+if cmp_ok then
+  capabilities = cmp_lsp.default_capabilities(capabilities)
 end
+vim.lsp.config("*", { capabilities = capabilities })
+
+-- Pyright
+vim.lsp.config("pyright", {
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = "workspace",
+      },
+    },
+  },
+})
+
+-- TypeScript/JavaScript
+vim.lsp.config("ts_ls", {
+  settings = {
+    typescript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+    javascript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+  },
+})
+
+-- Rust Analyzer
+vim.lsp.config("rust_analyzer", {
+  cmd = { vim.fn.expand("~/.local/bin/rust-analyzer") },
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = { loadOutDirsFromCheck = true },
+      procMacro = { enable = true },
+    },
+  },
+})
+
+-- Svelte
+vim.lsp.config("svelte", {
+  settings = {
+    svelte = {
+      plugin = {
+        html = { completions = { enable = true } },
+        svelte = { completions = { enable = true } },
+        css = { completions = { enable = true, emmet = true } },
+      },
+    },
+  },
+})
+
+-- Go
+vim.lsp.config("gopls", {
+  settings = {
+    gopls = {
+      analyses = { unusedparams = true, shadow = true },
+      staticcheck = true,
+      gofumpt = true,
+    },
+  },
+})
+
+vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls" })
+
+-- Auto diagnostic float on CursorHold
+api.nvim_create_autocmd("CursorHold", {
+  pattern = "*.py,*.js,*.ts,*.jsx,*.tsx,*.svelte,*.go",
+  callback = function()
+    vim.defer_fn(function()
+      vim.diagnostic.open_float(nil, { focusable = false })
+    end, 1000)
+  end,
+})
 
 -- ============================================================================
 -- Theme Selector
