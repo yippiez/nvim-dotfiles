@@ -1,4 +1,8 @@
 
+-- ============================================================================
+-- Basic Settings
+-- ============================================================================
+
 -- Set Leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
@@ -19,6 +23,7 @@ vim.g.loaded_tutor = 1
 -- ============================================================================
 -- Options
 -- ============================================================================
+
 vim.opt.lazyredraw = true
 vim.opt.updatetime = 300
 vim.opt.timeoutlen = 500
@@ -62,6 +67,7 @@ vim.filetype.add({ extension = { svelte = "svelte" } })
 -- ============================================================================
 -- Autocmds
 -- ============================================================================
+
 local api = vim.api
 
 -- Check for external file changes
@@ -99,6 +105,7 @@ api.nvim_create_autocmd("BufReadPost", {
 -- ============================================================================
 -- Keymaps
 -- ============================================================================
+
 local map = vim.keymap.set
 
 -- Basic
@@ -148,6 +155,7 @@ vim.cmd("command! W w")
 -- ============================================================================
 -- Plugin Manager (lazy.nvim)
 -- ============================================================================
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
@@ -161,6 +169,7 @@ vim.opt.rtp:prepend(lazypath)
 -- ============================================================================
 -- Plugins
 -- ============================================================================
+
 local plugins = {
   -- Colorscheme: Vague (default)
   {
@@ -184,14 +193,17 @@ local plugins = {
       require("lualine").setup({
         options = { icons_enabled = false, section_separators = "", component_separators = "" },
         sections = {
-          lualine_a = { "mode" },
+          lualine_a = {
+            { "mode" },
+            {
+              function() return "DEBUG" end,
+              cond = function() return _G.hydra_debug_active end,
+              color = "DiagnosticOk",
+            },
+          },
           lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = {
             "filename",
-            function()
-              if _G.hydra_debug_active then return "%#DiagnosticOk#DEBUG%*" end
-              return ""
-            end,
           },
           lualine_x = {
             function() return "bufs:" .. #vim.fn.getbufinfo({ buflisted = 1 }) end,
@@ -208,7 +220,11 @@ local plugins = {
     "folke/which-key.nvim",
     event = "VeryLazy",
     config = function()
-      require("which-key").setup({ win = { border = "rounded" }, icons = { mappings = false } })
+      require("which-key").setup({
+        preset = "modern",
+        win = { title = false, border = "rounded" },
+        icons = { mappings = false },
+      })
     end,
   },
 
@@ -462,10 +478,10 @@ local plugins = {
       local dap = require("dap")
 
       -- Signs
-      vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticError" })
-      vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl = "DiagnosticWarn" })
-      vim.fn.sign_define("DapBreakpointRejected", { text = "", texthl = "DiagnosticInfo" })
-      vim.fn.sign_define("DapLogPoint", { text = "", texthl = "DiagnosticHint" })
+      vim.fn.sign_define("DapBreakpoint", { text = "●", texthl = "DiagnosticError" })
+      vim.fn.sign_define("DapBreakpointCondition", { text = "◉", texthl = "DiagnosticWarn" })
+      vim.fn.sign_define("DapBreakpointRejected", { text = "○", texthl = "DiagnosticInfo" })
+      vim.fn.sign_define("DapLogPoint", { text = "◆", texthl = "DiagnosticHint" })
       vim.fn.sign_define("DapStopped", { text = "→", texthl = "DiagnosticOk", linehl = "DiffAdd" })
 
       -- Python adapter
@@ -522,26 +538,21 @@ local plugins = {
       local Hydra = require("hydra")
       local dap = require("dap")
 
-      -- Track debug mode for lualine
-      api.nvim_create_autocmd("User", {
-        pattern = "HydraEnter",
-        callback = function()
-          _G.hydra_debug_active = true
-          require("lualine").refresh()
-        end,
-      })
-      api.nvim_create_autocmd("User", {
-        pattern = "HydraLeave",
-        callback = function()
-          _G.hydra_debug_active = false
-          require("lualine").refresh()
-        end,
-      })
+      local function set_debug_active(active)
+        _G.hydra_debug_active = active
+        local ok, lualine = pcall(require, "lualine")
+        if ok then lualine.refresh() end
+      end
 
       Hydra({
         name = "Debug",
         mode = "n",
         body = "<leader>md",
+        hint = [[
+ _t_:breakpoint  _c_:continue  _R_:restart  _T_:terminate  _o_:step over
+ _m_:step into   _q_:step out  _r_:run      _u_:repl       _C_:condition
+ _Q_:exit
+]],
         heads = {
           { "t", dap.toggle_breakpoint, { desc = "Toggle breakpoint" } },
           { "c", dap.continue, { desc = "Continue/Start" } },
@@ -553,14 +564,16 @@ local plugins = {
           { "r", dap.run_to_cursor, { desc = "Run to cursor" } },
           { "u", dap.repl.toggle, { desc = "Toggle REPL" } },
           { "C", function() dap.set_breakpoint(vim.fn.input("Condition: ")) end, { desc = "Conditional BP" } },
-          { "<leader>md", nil, { exit = true, desc = "Exit" } },
+          { "<leader>md", nil, { exit = true, desc = false } },
           { "Q", nil, { exit = true, desc = "Exit" } },
-          { "<Esc>", nil, { exit = true, desc = "Exit" } },
+          { "<Esc>", nil, { exit = true, desc = false } },
         },
         config = {
           color = "pink",
           invoke_on_body = true,
-          hint = { type = "window", position = "bottom-right", float_opts = { border = "rounded" } },
+          on_enter = function() set_debug_active(true) end,
+          on_exit = function() set_debug_active(false) end,
+          hint = { type = "window", position = "bottom", float_opts = { border = "rounded" } },
         },
       })
     end,
@@ -631,6 +644,7 @@ require("lazy").setup(plugins, {
 -- ============================================================================
 -- LSP Configuration 
 -- ============================================================================
+
 -- Diagnostic configuration
 vim.diagnostic.config({
   virtual_text = {
@@ -741,6 +755,7 @@ api.nvim_create_autocmd("CursorHold", {
 -- ============================================================================
 -- Theme Selector
 -- ============================================================================
+
 local themes = { "tokyonight", "vague" }
 vim.api.nvim_create_user_command("SetTheme", function(opts)
   local theme = opts.args:lower()
