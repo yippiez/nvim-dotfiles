@@ -741,11 +741,22 @@ vim.lsp.config("gopls", {
   },
 })
 
-vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls" })
+-- Haskell
+vim.lsp.config("hls", {
+  cmd = { "haskell-language-server-wrapper", "--lsp" },
+  settings = {
+    haskell = {
+      formattingProvider = "fourmolu",
+      checkParents = "CheckOnSave",
+    },
+  },
+})
+
+vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls", "hls" })
 
 -- Auto diagnostic float on CursorHold
 api.nvim_create_autocmd("CursorHold", {
-  pattern = "*.py,*.js,*.ts,*.jsx,*.tsx,*.svelte,*.go",
+  pattern = "*.py,*.js,*.ts,*.jsx,*.tsx,*.svelte,*.go,*.hs",
   callback = function()
     vim.defer_fn(function()
       vim.diagnostic.open_float(nil, { focusable = false })
