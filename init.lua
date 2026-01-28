@@ -300,7 +300,12 @@ local plugins = {
         pickers = { find_files = { disable_devicons = true }, buffers = { disable_devicons = true } },
       })
       local builtin = require("telescope.builtin")
-      map("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
+      local custom_find_files = function()
+        builtin.find_files({
+          find_command = { "rg", "--files", "--color=never", "--ignore-file", ".gitignore" },
+        })
+      end
+      map("n", "<leader>ff", custom_find_files, { desc = "Find files" })
       map("n", "<leader>fg", builtin.live_grep, { desc = "Live grep" })
       map("n", "<leader>fb", builtin.buffers, { desc = "Buffers" })
       map("n", "<leader>fh", builtin.help_tags, { desc = "Help tags" })
