@@ -151,6 +151,7 @@ map("v", "<M-Right>", ">gv", { silent = true })
 -- Command aliases
 vim.cmd("command! Wq wq")
 vim.cmd("command! W w")
+vim.cmd("command! Q q!")
 
 -- ============================================================================
 -- Plugin Manager (lazy.nvim)
