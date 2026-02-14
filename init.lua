@@ -1,8 +1,3 @@
-
--- ============================================================================
--- Basic Settings
--- ============================================================================
-
 -- Set Leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
@@ -19,10 +14,6 @@ vim.g.loaded_matchit = 1
 vim.g.loaded_matchparen = 1
 vim.g.loaded_tohtml = 1
 vim.g.loaded_tutor = 1
-
--- ============================================================================
--- Options
--- ============================================================================
 
 vim.opt.lazyredraw = true
 vim.opt.updatetime = 300
@@ -42,12 +33,11 @@ vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
--- Clipboard (non-WSL)
+-- WSL Clipboard support
 if vim.fn.has("wsl") ~= 1 then
   vim.opt.clipboard = "unnamedplus"
 end
 
--- WSL clipboard support
 if vim.fn.has("wsl") == 1 then
   local win32yank = "/mnt/c/dev/custom_commands/win32yank.exe"
   if vim.fn.executable(win32yank) == 1 then
@@ -61,20 +51,7 @@ if vim.fn.has("wsl") == 1 then
   end
 end
 
--- Filetype detection
-vim.filetype.add({ extension = { svelte = "svelte" } })
-
--- ============================================================================
--- Autocmds
--- ============================================================================
-
 local api = vim.api
-
--- Check for external file changes
-api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
-  pattern = "*",
-  command = "checktime",
-})
 
 -- Save/restore folds
 local fold_filetypes = "*.py,*.js,*.ts,*.jsx,*.tsx,*.svelte,*.lua,*.md"
@@ -102,14 +79,9 @@ api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
--- ============================================================================
--- Keymaps
--- ============================================================================
-
 local map = vim.keymap.set
 
 -- Basic
-map("i", "jk", "<Esc>")
 map("n", "<Esc>", ":noh<CR>", { silent = true })
 map({ "n", "i" }, "<C-s>", "<cmd>w<CR>")
 
@@ -154,10 +126,6 @@ vim.cmd("command! W w")
 vim.cmd("command! Q q!")
 vim.cmd("cnoreabbrev Q! q!")
 
--- ============================================================================
--- Plugin Manager (lazy.nvim)
--- ============================================================================
-
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
@@ -167,10 +135,6 @@ if not vim.uv.fs_stat(lazypath) then
   })
 end
 vim.opt.rtp:prepend(lazypath)
-
--- ============================================================================
--- Plugins
--- ============================================================================
 
 local plugins = {
   -- Colorscheme: Vague (default)
@@ -184,9 +148,6 @@ local plugins = {
       vim.cmd.colorscheme("vague")
     end,
   },
-
-  -- Colorscheme: Tokyo Night
-  { "folke/tokyonight.nvim", lazy = true },
 
   -- Status line
   {
@@ -318,7 +279,7 @@ local plugins = {
     end,
   },
 
-  -- Flash (navigation)
+  -- Flash 
   {
     "folke/flash.nvim",
     event = "VeryLazy",
@@ -333,7 +294,7 @@ local plugins = {
     end,
   },
 
-  -- Oil (file manager)
+  -- Oil 
   {
     "stevearc/oil.nvim",
     config = function()
@@ -363,38 +324,6 @@ local plugins = {
         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "nx", false)
         comment_api.toggle.linewise(vim.fn.visualmode())
       end, { desc = "Toggle comment" })
-    end,
-  },
-
-  -- Multiple cursors
-{
-    "nvimtools/hydra.nvim",
-    config = function()
-      local Hydra = require("hydra")
-      Hydra({
-        name = "Window",
-        mode = "n",
-        body = "<C-w>",
-        heads = {
-          { "h", "<C-w>h" },
-          { "j", "<C-w>j" },
-          { "k", "<C-w>k" },
-          { "l", "<C-w>l" },
-          { "H", "<C-w>H" },
-          { "J", "<C-w>J" },
-          { "K", "<C-w>K" },
-          { "L", "<C-w>L" },
-          { "v", "<C-w>v" },
-          { "s", "<C-w>s" },
-          { "q", nil, { exit = true } },
-          { "<Esc>", nil, { exit = true } },
-        },
-        hint = {
-          float_opts = {
-            border = "rounded",
-          },
-        },
-      })
     end,
   },
 
@@ -483,111 +412,7 @@ local plugins = {
     end,
   },
 
-  -- DAP (Debugger)
-  {
-    "mfussenegger/nvim-dap",
-    dependencies = { "nvim-neotest/nvim-nio" },
-    config = function()
-      local dap = require("dap")
-
-      -- Signs
-      vim.fn.sign_define("DapBreakpoint", { text = "●", texthl = "DiagnosticError" })
-      vim.fn.sign_define("DapBreakpointCondition", { text = "◉", texthl = "DiagnosticWarn" })
-      vim.fn.sign_define("DapBreakpointRejected", { text = "○", texthl = "DiagnosticInfo" })
-      vim.fn.sign_define("DapLogPoint", { text = "◆", texthl = "DiagnosticHint" })
-      vim.fn.sign_define("DapStopped", { text = "→", texthl = "DiagnosticOk", linehl = "DiffAdd" })
-
-      -- Python adapter
-      dap.adapters.python = {
-        type = "executable",
-        command = vim.fn.exepath("python3"),
-        args = { "-m", "debugpy.adapter" },
-      }
-      dap.configurations.python = {
-        {
-          type = "python",
-          request = "launch",
-          name = "Launch file (uv)",
-          program = "${file}",
-          pythonPath = function()
-            local venv = vim.fn.getcwd() .. "/.venv/bin/python"
-            if vim.fn.executable(venv) == 1 then return venv end
-            return vim.fn.exepath("python3")
-          end,
-        },
-        {
-          type = "python",
-          request = "launch",
-          name = "Launch file (system)",
-          program = "${file}",
-          pythonPath = vim.fn.exepath("python3"),
-        },
-      }
-    end,
-  },
-
-  -- DAP View
-  {
-    "igorlfs/nvim-dap-view",
-    dependencies = { "mfussenegger/nvim-dap" },
-    config = function()
-      local dapview = require("dap-view")
-      dapview.setup({
-        winbar = {
-          sections = { "console", "watches", "scopes", "exceptions", "breakpoints", "threads", "repl" },
-        },
-      })
-      local dap = require("dap")
-      dap.listeners.after.event_initialized["dapview"] = function() dapview.open() end
-      dap.listeners.before.event_terminated["dapview"] = function() dapview.close() end
-      dap.listeners.before.event_exited["dapview"] = function() dapview.close() end
-    end,
-  },
-
-  -- Hydra (sticky keymaps)
-  {
-    "nvimtools/hydra.nvim",
-    config = function()
-      local Hydra = require("hydra")
-      local dap = require("dap")
-
-      local function set_debug_active(active)
-        _G.hydra_debug_active = active
-        local ok, lualine = pcall(require, "lualine")
-        if ok then lualine.refresh() end
-      end
-
-      Hydra({
-        name = "Debug",
-        mode = "n",
-        body = "<leader>md",
-        heads = {
-          { "t", dap.toggle_breakpoint },
-          { "c", dap.continue },
-          { "R", dap.restart },
-          { "T", dap.terminate },
-          { "o", dap.step_over },
-          { "m", dap.step_into },
-          { "q", dap.step_out },
-          { "r", dap.run_to_cursor },
-          { "u", dap.repl.toggle },
-          { "C", function() dap.set_breakpoint(vim.fn.input("Condition: ")) end },
-          { "<leader>md", nil, { exit = true } },
-          { "Q", nil, { exit = true } },
-          { "<Esc>", nil, { exit = true } },
-        },
-        config = {
-          color = "pink",
-          invoke_on_body = true,
-          on_enter = function() set_debug_active(true) end,
-          on_exit = function() set_debug_active(false) end,
-          hint = false,
-        },
-      })
-    end,
-  },
-
-  -- Iron (REPL)
+  -- Iron REPL
   {
     "Vigemus/iron.nvim",
     config = function()
@@ -634,7 +459,7 @@ local plugins = {
     end,
   },
 
-  -- 99 (AI Agent)
+  -- 99
   {
     "ThePrimeagen/99",
     config = function()
@@ -643,11 +468,11 @@ local plugins = {
       local basename = vim.fs.basename(cwd)
 
       _G._99_models = {
-        "github-copilot/grok-code-fast-1",
         "opencode/kimi-k2.5-free",
-        "openai/gpt-5.2-codex",
+        "github-copilot/grok-code-fast-1",
+        "openai/gpt-5.3-codex",
       }
-      _G._99_current_model = _G._99_models[1]
+      _G._99_current_model = _G._99_models[0]
 
       _G._99_pick_model = function()
         vim.ui.select(_G._99_models, {
@@ -678,11 +503,9 @@ local plugins = {
         return original_build(_, query, request)
       end
 
-      map("n", "<leader>9f", function() _99.fill_in_function() end, { desc = "99: Fill in function" })
       map("v", "<leader>9v", function() _99.visual() end, { desc = "99: Visual selection" })
       map("n", "<leader>9s", function() _99.stop_all_requests() end, { desc = "99: Stop all requests" })
       map("n", "<leader>9m", function() _G._99_pick_model() end, { desc = "99: Select model" })
-      map("n", "<leader>9F", function() _99.fill_in_function_prompt() end, { desc = "99: Fill function (prompt)" })
       map("v", "<leader>9V", function() _99.visual_prompt() end, { desc = "99: Visual selection (prompt)" })
     end,
   },
@@ -702,10 +525,6 @@ require("lazy").setup(plugins, {
   },
 })
 
--- ============================================================================
--- LSP Configuration 
--- ============================================================================
-
 -- Diagnostic configuration
 vim.diagnostic.config({
   virtual_text = {
@@ -723,7 +542,7 @@ vim.diagnostic.config({
   severity_sort = true,
 })
 
--- LSP capabilities (global)
+-- LSP capabilities
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local cmp_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
 if cmp_ok then
@@ -777,19 +596,6 @@ vim.lsp.config("rust_analyzer", {
   },
 })
 
--- Svelte
-vim.lsp.config("svelte", {
-  settings = {
-    svelte = {
-      plugin = {
-        html = { completions = { enable = true } },
-        svelte = { completions = { enable = true } },
-        css = { completions = { enable = true, emmet = true } },
-      },
-    },
-  },
-})
-
 -- Go
 vim.lsp.config("gopls", {
   settings = {
@@ -813,32 +619,3 @@ vim.lsp.config("hls", {
 })
 
 vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls", "hls" })
-
--- Auto diagnostic float on CursorHold
-api.nvim_create_autocmd("CursorHold", {
-  pattern = "*.py,*.js,*.ts,*.jsx,*.tsx,*.svelte,*.go,*.hs",
-  callback = function()
-    vim.defer_fn(function()
-      vim.diagnostic.open_float(nil, { focusable = false })
-    end, 1000)
-  end,
-})
-
--- ============================================================================
--- Theme Selector
--- ============================================================================
-
-local themes = { "tokyonight", "vague" }
-vim.api.nvim_create_user_command("SetTheme", function(opts)
-  local theme = opts.args:lower()
-  for _, t in ipairs(themes) do
-    if t:lower() == theme then
-      vim.cmd.colorscheme(t)
-      return
-    end
-  end
-  print("Unknown theme: " .. opts.args)
-end, {
-  nargs = 1,
-  complete = function() return themes end,
-})
