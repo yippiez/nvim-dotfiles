@@ -465,6 +465,8 @@ local plugins = {
     config = function()
       local _99 = require("99")
       local models = {
+        "opencode/minimax-m2.5-free",
+        "opencode/big-pickle",
         "opencode/kimi-k2.5-free",
         "github-copilot/grok-code-fast-1",
         "openai/gpt-5.3-codex",
