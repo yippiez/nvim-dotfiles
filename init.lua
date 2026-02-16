@@ -464,29 +464,10 @@ local plugins = {
     "ThePrimeagen/99",
     config = function()
       local _99 = require("99")
-      local cwd = vim.uv.cwd()
-      local basename = vim.fs.basename(cwd)
-
-      _G._99_models = {
-        "opencode/kimi-k2.5-free",
-        "github-copilot/grok-code-fast-1",
-        "openai/gpt-5.3-codex",
-      }
-      _G._99_current_model = _G._99_models[0]
-
-      _G._99_pick_model = function()
-        vim.ui.select(_G._99_models, {
-          prompt = "Select 99 model:",
-        }, function(choice)
-          if choice then
-            _G._99_current_model = choice
-            print("99 model: " .. choice)
-          end
-        end)
-      end
 
       _99.setup({
-        model = _G._99_current_model,
+        provider = _99.OpenCodeProvider,
+        model = "opencode/kimi-k2.5-free",
         completion = {
           custom_rules = {},
           source = "cmp",
@@ -496,17 +477,8 @@ local plugins = {
         },
       })
 
-      local Providers = require("99.providers")
-      local original_build = Providers.OpenCodeProvider._build_command
-      Providers.OpenCodeProvider._build_command = function(_, query, request)
-        request.context.model = _G._99_current_model
-        return original_build(_, query, request)
-      end
-
       map("v", "<leader>9v", function() _99.visual() end, { desc = "99: Visual selection" })
       map("n", "<leader>9s", function() _99.stop_all_requests() end, { desc = "99: Stop all requests" })
-      map("n", "<leader>9m", function() _G._99_pick_model() end, { desc = "99: Select model" })
-      map("v", "<leader>9V", function() _99.visual_prompt() end, { desc = "99: Visual selection (prompt)" })
     end,
   },
 }
