@@ -412,53 +412,6 @@ local plugins = {
     end,
   },
 
-  -- Iron REPL
-  {
-    "Vigemus/iron.nvim",
-    config = function()
-      local iron = require("iron.core")
-      iron.setup({
-        config = {
-          scratch_repl = true,
-          repl_definition = {
-            python = { command = { "python3" } },
-            zsh = { command = { "zsh" } },
-          },
-          repl_open_cmd = "vertical botright 50% split",
-        },
-        keymaps = {},
-        highlight = { italic = true },
-        ignore_blank_lines = true,
-      })
-
-      local function toggle_repl(size)
-        iron.repl_for(vim.bo.filetype)
-        if size == "full" then
-          vim.cmd("wincmd L")
-        end
-      end
-
-      local function send_block()
-        local start_line = vim.fn.search("^# %%", "bnW")
-        local end_line = vim.fn.search("^# %%", "nW")
-        if start_line == 0 then start_line = 1 else start_line = start_line + 1 end
-        if end_line == 0 then end_line = vim.fn.line("$") else end_line = end_line - 1 end
-        iron.send(vim.bo.filetype, vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false))
-      end
-
-      map("n", "<leader>rr", function() toggle_repl("half") end, { desc = "Toggle REPL (50%)" })
-      map("n", "<leader>rR", function() toggle_repl("full") end, { desc = "Toggle REPL (full)" })
-      map("n", "<leader>rF", function() iron.repl_restart() end, { desc = "Restart REPL" })
-      map("n", "<leader>rl", function() iron.send_line() end, { desc = "Send line" })
-      map("v", "<leader>rl", function() iron.visual_send() end, { desc = "Send selection" })
-      map("n", "<leader>rb", send_block, { desc = "Send code block" })
-      map("n", "<leader>ri", function() iron.send(vim.bo.filetype, string.char(03)) end, { desc = "Interrupt REPL" })
-      map("n", "<leader>rf", function() iron.focus_on(vim.bo.filetype) end, { desc = "Focus REPL" })
-      map("n", "<leader>rh", function() iron.close_repl(vim.bo.filetype) end, { desc = "Hide REPL" })
-      map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-    end,
-  },
-
   {
     "stevearc/oil.nvim",
   },
