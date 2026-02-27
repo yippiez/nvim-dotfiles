@@ -459,50 +459,8 @@ local plugins = {
     end,
   },
 
-  -- 99
   {
-    "ThePrimeagen/99",
-    config = function()
-      local _99 = require("99")
-      local models = {
-        "opencode/minimax-m2.5-free",
-        "opencode/big-pickle",
-        "opencode/kimi-k2.5-free",
-        "github-copilot/grok-code-fast-1",
-        "openai/gpt-5.3-codex",
-      }
-      local current_model = models[1]
-
-      _99.setup({
-        provider = _99.OpenCodeProvider,
-        model = current_model,
-        completion = {
-          custom_rules = {},
-          source = "cmp",
-        },
-        md_files = {
-          "AGENT.md",
-        },
-      })
-
-      local function pick_model()
-        vim.ui.select(models, {
-          prompt = "Select 99 model:",
-        }, function(choice)
-          if not choice then
-            return
-          end
-
-          current_model = choice
-          _99.set_model(choice)
-          print("99 model: " .. choice)
-        end)
-      end
-
-      map("v", "<leader>9v", function() _99.visual() end, { desc = "99: Visual selection" })
-      map("n", "<leader>9s", function() _99.stop_all_requests() end, { desc = "99: Stop all requests" })
-      map("n", "<leader>9m", pick_model, { desc = "99: Select model" })
-    end,
+    "stevearc/oil.nvim",
   },
 }
 
