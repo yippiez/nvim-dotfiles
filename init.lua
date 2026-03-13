@@ -524,4 +524,15 @@ vim.lsp.config("hls", {
   },
 })
 
-vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls", "hls" })
+-- Elixir
+vim.lsp.config("elixirls", {
+  cmd = { vim.fn.expand("~/.elixir-ls/release/language_server.sh") },
+  settings = {
+    elixirLS = {
+      dialyzerEnabled = true,
+      fetchDeps = true,
+    },
+  },
+})
+
+vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls", "hls", "elixirls" })
