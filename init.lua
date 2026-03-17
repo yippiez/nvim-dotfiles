@@ -84,6 +84,7 @@ local map = vim.keymap.set
 -- Basic
 map("n", "<Esc>", ":noh<CR>", { silent = true })
 map({ "n", "i" }, "<C-s>", "<cmd>w<CR>")
+map("n", "<leader>cr", ":Compile<CR>", { desc = "Run compile mode" })
 
 -- Git change navigation
 map("n", "]c", function()
@@ -336,6 +337,26 @@ local plugins = {
       tsj.setup({ use_default_keymaps = false })
       map("n", "<leader>ls", tsj.toggle, { desc = "Toggle split/join" })
       map("n", "<leader>lS", function() tsj.toggle({ split = { recursive = true } }) end, { desc = "Toggle recursive" })
+    end,
+  },
+
+  -- Compile Mode
+  {
+    "ej-shafran/compile-mode.nvim",
+    version = "^5.0.0",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      vim.g.compile_mode = {
+        default_command = {
+          rust = "cargo run",
+        },
+        custom_commands = {
+          { cmd = "cargo test", label = "rust_test" },
+          { cmd = "cargo build", label = "rust_build" },
+        },
+        auto_jump_to_first_error = true,
+        use_diagnostics = true,
+      }
     end,
   },
 
