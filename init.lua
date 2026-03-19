@@ -84,7 +84,10 @@ local map = vim.keymap.set
 -- Basic
 map("n", "<Esc>", ":noh<CR>", { silent = true })
 map({ "n", "i" }, "<C-s>", "<cmd>w<CR>")
-map("n", "<leader>cr", ":Compile<CR>", { desc = "Run compile mode" })
+map("n", "<leader>cr", "<cmd>belowright Compile<CR>", { desc = "Run compile mode" })
+map("n", "<leader>cq", function()
+  require("compile-mode").close_buffer()
+end, { desc = "Close compile window" })
 
 -- Git change navigation
 map("n", "]c", function()
@@ -349,13 +352,13 @@ local plugins = {
       vim.g.compile_mode = {
         default_command = {
           rust = "cargo run",
+          python = "uv run %",
+          ["*"] = "make -k ",
         },
-        custom_commands = {
-          { cmd = "cargo test", label = "rust_test" },
-          { cmd = "cargo build", label = "rust_build" },
-        },
+        bang_expansion = true,
         auto_jump_to_first_error = true,
-        use_diagnostics = true,
+        use_diagnostics = false,
+        focus_compilation_buffer = true,
       }
     end,
   },
