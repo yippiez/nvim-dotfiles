@@ -362,10 +362,10 @@ local plugins = {
         default_command = {
           rust = "cargo run",
           python = "uv run %",
+          dart = "flutter analyze",
           ["*"] = "make -k ",
         },
         bang_expansion = true,
-        auto_jump_to_first_error = true,
         use_diagnostics = false,
         focus_compilation_buffer = true,
       }
