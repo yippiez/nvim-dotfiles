@@ -559,4 +559,17 @@ vim.lsp.config("elixirls", {
   },
 })
 
-vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls", "hls", "elixirls" })
+-- Dart/Flutter
+vim.lsp.config("dartls", {
+  cmd = { "dart", "language-server", "--lsp", "--protocol=analyzer" },
+  settings = {
+    dart = {
+      analysisExcludedFolders = { ".dart_tool", "build" },
+      completeFunctionCalls = true,
+      renameFilesWithClasses = "always",
+      enableSnippets = true,
+    },
+  },
+})
+
+vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls", "hls", "elixirls", "dartls" })
