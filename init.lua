@@ -439,6 +439,14 @@ local plugins = {
   {
     "stevearc/oil.nvim",
   },
+
+  -- Auto-detect indentation
+  {
+    "NMAC427/guess-indent.nvim",
+    config = function()
+      require("guess-indent").setup({})
+    end,
+  },
 }
 
 require("lazy").setup(plugins, {
