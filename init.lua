@@ -104,8 +104,17 @@ map("n", "gr", vim.lsp.buf.references, { desc = "References" })
 map("n", "<leader>lr", vim.lsp.buf.rename, { desc = "Rename" })
 map("n", "<leader>le", vim.diagnostic.open_float, { desc = "Diagnostic float" })
 map("n", "<leader>la", vim.lsp.buf.hover, { desc = "Hover" })
+map({ "n", "v" }, "<leader>lf", vim.lsp.buf.code_action, { desc = "Code action" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev diagnostic" })
+map({ "n", "v" }, "<leader>ls", function()
+  vim.lsp.buf.code_action({
+    filter = function(action)
+      local kind = action.kind or ""
+      return kind:find("^refactor") ~= nil
+    end,
+  })
+end, { desc = "Refactor (split/join)" })
 map("n", "<leader>lc", function()
   local d = vim.diagnostic.get(0, { lnum = vim.fn.line(".") - 1 })
   if #d > 0 then
@@ -419,7 +428,7 @@ local plugins = {
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "lua", "vim", "python", "javascript", "typescript" },
+        ensure_installed = { "lua", "vim", "python", "javascript", "typescript", "dart" },
         auto_install = true,
         highlight = { enable = true },
         indent = { enable = true },
