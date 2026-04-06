@@ -88,6 +88,7 @@ map("n", "<leader>cr", "<cmd>belowright Compile<CR>", { desc = "Run compile mode
 map("n", "<leader>cq", function()
   require("compile-mode").close_buffer()
 end, { desc = "Close compile window" })
+map("n", "<leader>q", ":bdelete<CR>", { desc = "Close buffer" })
 
 -- Git change navigation
 map("n", "]c", function()
@@ -408,7 +409,7 @@ local plugins = {
     config = function()
       require("copilot").setup({
         suggestion = {
-          enabled = true,
+          enabled = false,
           auto_trigger = true,
           keymap = {
             accept = "<Right>",
