@@ -32,6 +32,7 @@ vim.opt.autoread = true
 vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
+vim.opt.synmaxcol = 200
 
 -- WSL Clipboard support
 if vim.fn.has("wsl") ~= 1 then
@@ -53,15 +54,30 @@ end
 
 local api = vim.api
 
+-- Large-file guard (used by treesitter, folds, etc.)
+local LARGE_FILE_SIZE = 100 * 1024 -- 100 KB
+local function is_large_file(bufnr)
+  local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(bufnr or 0))
+  return ok and stats and stats.size > LARGE_FILE_SIZE
+end
+
 -- Save/restore folds
 local fold_filetypes = "*.py,*.js,*.ts,*.jsx,*.tsx,*.svelte,*.lua,*.md"
 api.nvim_create_autocmd("BufWinLeave", {
   pattern = fold_filetypes,
-  command = "silent! mkview",
+  callback = function(args)
+    if not is_large_file(args.buf) then
+      vim.cmd("silent! mkview")
+    end
+  end,
 })
 api.nvim_create_autocmd("BufWinEnter", {
   pattern = fold_filetypes,
-  command = "silent! loadview",
+  callback = function(args)
+    if not is_large_file(args.buf) then
+      vim.cmd("silent! loadview")
+    end
+  end,
 })
 
 -- Highlight on yank
@@ -226,6 +242,7 @@ local plugins = {
   -- Todo comments
   {
     "folke/todo-comments.nvim",
+    event = "BufReadPost",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       require("todo-comments").setup({
@@ -247,6 +264,7 @@ local plugins = {
   -- LSP Lens
   {
     "VidocqH/lsp-lens.nvim",
+    event = "LspAttach",
     config = function()
       require("lsp-lens").setup({
         sections = { definition = false, references = true, implements = true, git_authors = false },
@@ -259,6 +277,110 @@ local plugins = {
   {
     "neovim/nvim-lspconfig",
     lazy = false,
+    dependencies = { "hrsh7th/cmp-nvim-lsp" },
+    config = function()
+      -- LSP capabilities
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      local cmp_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+      if cmp_ok then
+        capabilities = cmp_lsp.default_capabilities(capabilities)
+      end
+      vim.lsp.config("*", { capabilities = capabilities })
+
+      -- Pyright
+      vim.lsp.config("pyright", {
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "openFilesOnly",
+            },
+          },
+        },
+      })
+
+      -- TypeScript/JavaScript
+      vim.lsp.config("ts_ls", {
+        settings = {
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+          javascript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+        },
+      })
+
+      -- Rust Analyzer
+      vim.lsp.config("rust_analyzer", {
+        cmd = { vim.fn.expand("~/.local/bin/rust-analyzer") },
+        settings = {
+          ["rust-analyzer"] = {
+            cargo = { loadOutDirsFromCheck = true },
+            procMacro = { enable = true },
+          },
+        },
+      })
+
+      -- Go
+      vim.lsp.config("gopls", {
+        settings = {
+          gopls = {
+            analyses = { unusedparams = true, shadow = true },
+            staticcheck = true,
+            gofumpt = true,
+          },
+        },
+      })
+
+      -- Haskell
+      vim.lsp.config("hls", {
+        cmd = { "haskell-language-server-wrapper", "--lsp" },
+        settings = {
+          haskell = {
+            formattingProvider = "fourmolu",
+            checkParents = "CheckOnSave",
+          },
+        },
+      })
+
+      -- Elixir
+      vim.lsp.config("elixirls", {
+        cmd = { vim.fn.expand("~/.elixir-ls/release/language_server.sh") },
+        settings = {
+          elixirLS = {
+            dialyzerEnabled = true,
+            fetchDeps = true,
+          },
+        },
+      })
+
+      -- Dart/Flutter
+      vim.lsp.config("dartls", {
+        cmd = { "dart", "language-server", "--lsp", "--protocol=analyzer" },
+        settings = {
+          dart = {
+            analysisExcludedFolders = { ".dart_tool", "build" },
+            completeFunctionCalls = true,
+            renameFilesWithClasses = "always",
+            enableSnippets = true,
+          },
+        },
+      })
+
+      vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls", "hls", "elixirls", "dartls" })
+    end,
   },
 
   -- Telescope
@@ -381,7 +503,9 @@ local plugins = {
       local cmp = require("cmp")
       cmp.setup({
         sources = cmp.config.sources({
-          { name = "nvim_lsp" }, { name = "buffer" }, { name = "path" },
+          { name = "nvim_lsp" },
+          { name = "buffer", keyword_length = 3, max_item_count = 10 },
+          { name = "path" },
         }),
         mapping = cmp.mapping.preset.insert({
           ["<Tab>"] = cmp.mapping.select_next_item(),
@@ -431,8 +555,22 @@ local plugins = {
       require("nvim-treesitter.configs").setup({
         ensure_installed = { "lua", "vim", "python", "javascript", "typescript", "dart" },
         auto_install = true,
-        highlight = { enable = true },
-        indent = { enable = true },
+        highlight = {
+          enable = true,
+          disable = function(_, bufnr)
+            if is_large_file(bufnr) then
+              -- Fall back to regex syntax for large files
+              vim.bo[bufnr].syntax = vim.bo[bufnr].filetype
+              return true
+            end
+          end,
+        },
+        indent = {
+          enable = true,
+          disable = function(_, bufnr)
+            return is_large_file(bufnr)
+          end,
+        },
         incremental_selection = {
           enable = true,
           keymaps = {
@@ -444,10 +582,6 @@ local plugins = {
         },
       })
     end,
-  },
-
-  {
-    "stevearc/oil.nvim",
   },
 
   -- Auto-detect indentation
@@ -490,104 +624,4 @@ vim.diagnostic.config({
   severity_sort = true,
 })
 
--- LSP capabilities
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local cmp_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-if cmp_ok then
-  capabilities = cmp_lsp.default_capabilities(capabilities)
-end
-vim.lsp.config("*", { capabilities = capabilities })
 
--- Pyright
-vim.lsp.config("pyright", {
-  settings = {
-    python = {
-      analysis = {
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = true,
-        diagnosticMode = "workspace",
-      },
-    },
-  },
-})
-
--- TypeScript/JavaScript
-vim.lsp.config("ts_ls", {
-  settings = {
-    typescript = {
-      inlayHints = {
-        includeInlayParameterNameHints = "all",
-        includeInlayFunctionParameterTypeHints = true,
-        includeInlayFunctionLikeReturnTypeHints = true,
-        includeInlayEnumMemberValueHints = true,
-      },
-    },
-    javascript = {
-      inlayHints = {
-        includeInlayParameterNameHints = "all",
-        includeInlayFunctionParameterTypeHints = true,
-        includeInlayFunctionLikeReturnTypeHints = true,
-        includeInlayEnumMemberValueHints = true,
-      },
-    },
-  },
-})
-
--- Rust Analyzer
-vim.lsp.config("rust_analyzer", {
-  cmd = { vim.fn.expand("~/.local/bin/rust-analyzer") },
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = { loadOutDirsFromCheck = true },
-      procMacro = { enable = true },
-    },
-  },
-})
-
--- Go
-vim.lsp.config("gopls", {
-  settings = {
-    gopls = {
-      analyses = { unusedparams = true, shadow = true },
-      staticcheck = true,
-      gofumpt = true,
-    },
-  },
-})
-
--- Haskell
-vim.lsp.config("hls", {
-  cmd = { "haskell-language-server-wrapper", "--lsp" },
-  settings = {
-    haskell = {
-      formattingProvider = "fourmolu",
-      checkParents = "CheckOnSave",
-    },
-  },
-})
-
--- Elixir
-vim.lsp.config("elixirls", {
-  cmd = { vim.fn.expand("~/.elixir-ls/release/language_server.sh") },
-  settings = {
-    elixirLS = {
-      dialyzerEnabled = true,
-      fetchDeps = true,
-    },
-  },
-})
-
--- Dart/Flutter
-vim.lsp.config("dartls", {
-  cmd = { "dart", "language-server", "--lsp", "--protocol=analyzer" },
-  settings = {
-    dart = {
-      analysisExcludedFolders = { ".dart_tool", "build" },
-      completeFunctionCalls = true,
-      renameFilesWithClasses = "always",
-      enableSnippets = true,
-    },
-  },
-})
-
-vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls", "hls", "elixirls", "dartls" })
