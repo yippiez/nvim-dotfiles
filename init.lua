@@ -401,11 +401,16 @@ local plugins = {
       local builtin = require("telescope.builtin")
       local custom_find_files = function()
         builtin.find_files({
-          find_command = { "rg", "--files", "--color=never", "--ignore-file", ".gitignore" },
+          find_command = { "rg", "--files", "--color=never", "--hidden", "--ignore-file", ".jjignore" },
+        })
+      end
+      local custom_live_grep = function()
+        builtin.live_grep({
+          additional_args = { "--hidden", "--ignore-file", ".jjignore" },
         })
       end
       map("n", "<leader>ff", custom_find_files, { desc = "Find files" })
-      map("n", "<leader>fg", builtin.live_grep, { desc = "Live grep" })
+      map("n", "<leader>fg", custom_live_grep, { desc = "Live grep" })
       map("n", "<leader>fb", builtin.buffers, { desc = "Buffers" })
       map("n", "<leader>fh", builtin.help_tags, { desc = "Help tags" })
       map("n", "<leader>fc", builtin.commands, { desc = "Commands" })
