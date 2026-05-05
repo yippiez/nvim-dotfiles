@@ -34,20 +34,20 @@ vim.opt.signcolumn = "yes"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.opt.synmaxcol = 200
 
--- WSL Clipboard support
+-- Clipboard support
 if vim.fn.has("wsl") ~= 1 then
   vim.opt.clipboard = "unnamedplus"
-end
-
-if vim.fn.has("wsl") == 1 then
-  local win32yank = "/mnt/c/dev/custom_commands/win32yank.exe"
-  if vim.fn.executable(win32yank) == 1 then
+else
+  -- win32yank.exe is in PATH via WSL interop
+  if vim.fn.executable("win32yank.exe") == 1 then
     vim.g.clipboard = {
       name = "win32yank-wsl",
-      copy = { ["+"] = { win32yank, "-i", "--crlf" }, ["*"] = { win32yank, "-i", "--crlf" } },
-      paste = { ["+"] = { win32yank, "-o", "--lf" }, ["*"] = { win32yank, "-o", "--lf" } },
+      copy = { ["+"] = { "win32yank.exe", "-i", "--crlf" }, ["*"] = { "win32yank.exe", "-i", "--crlf" } },
+      paste = { ["+"] = { "win32yank.exe", "-o", "--lf" }, ["*"] = { "win32yank.exe", "-o", "--lf" } },
       cache_enabled = true,
     }
+    vim.opt.clipboard = "unnamedplus"
+  else
     vim.opt.clipboard = "unnamedplus"
   end
 end
