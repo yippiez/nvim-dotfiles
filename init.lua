@@ -629,4 +629,63 @@ vim.diagnostic.config({
   severity_sort = true,
 })
 
+-- Insert comment line with language-appropriate syntax
+map("n", "<leader>rc", function()
+  local cs = vim.bo.commentstring
+  if not cs or cs == "" then
+    local ft_leaders = {
+      python = "#", sh = "#", bash = "#", zsh = "#",
+      lua = "--", sql = "--", haskell = "--",
+      javascript = "//", typescript = "//", javascriptreact = "//",
+      typescriptreact = "//", c = "//", cpp = "//", rust = "//",
+      go = "//", java = "//", dart = "//", kotlin = "//", swift = "//",
+      yaml = "#", ruby = "#", elixir = "#", toml = "#", conf = "#",
+      make = "#", vim = '"', fennel = ";", clojure = ";", lisp = ";",
+      tex = "%", matlab = "%", erlang = "%",
+      css = "/*", html = "<!--", xml = "<!--",
+    }
+    cs = (ft_leaders[vim.bo.filetype] or "#") .. " %s"
+  end
+
+  local c_leader = cs:match("^(.-)%%s")
+  c_leader = c_leader and vim.trim(c_leader) or "#"
+
+  local indent = vim.fn.getline("."):match("^(%s*)") or ""
+  local comment_line = indent .. c_leader .. " ... "
+
+  local lnum = vim.fn.line(".")
+  vim.fn.append(lnum - 1, comment_line)
+  vim.fn.cursor(lnum, #comment_line + 1)
+  vim.cmd("startinsert!")
+end, { desc = "Insert comment line" })
+
+map("n", "<leader>rt", function()
+  local cs = vim.bo.commentstring
+  if not cs or cs == "" then
+    local ft_leaders = {
+      python = "#", sh = "#", bash = "#", zsh = "#",
+      lua = "--", sql = "--", haskell = "--",
+      javascript = "//", typescript = "//", javascriptreact = "//",
+      typescriptreact = "//", c = "//", cpp = "//", rust = "//",
+      go = "//", java = "//", dart = "//", kotlin = "//", swift = "//",
+      yaml = "#", ruby = "#", elixir = "#", toml = "#", conf = "#",
+      make = "#", vim = '"', fennel = ";", clojure = ";", lisp = ";",
+      tex = "%", matlab = "%", erlang = "%",
+      css = "/*", html = "<!--", xml = "<!--",
+    }
+    cs = (ft_leaders[vim.bo.filetype] or "#") .. " %s"
+  end
+
+  local c_leader = cs:match("^(.-)%%s")
+  c_leader = c_leader and vim.trim(c_leader) or "#"
+
+  local indent = vim.fn.getline("."):match("^(%s*)") or ""
+  local comment_line = indent .. c_leader .. " TODO: "
+
+  local lnum = vim.fn.line(".")
+  vim.fn.append(lnum - 1, comment_line)
+  vim.fn.cursor(lnum, #comment_line + 1)
+  vim.cmd("startinsert!")
+end, { desc = "Insert TODO comment" })
+
 
