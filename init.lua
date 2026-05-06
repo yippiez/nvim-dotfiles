@@ -688,4 +688,12 @@ map("n", "<leader>rt", function()
   vim.cmd("startinsert!")
 end, { desc = "Insert TODO comment" })
 
+map("n", "<leader>ro", function()
+  local indent = vim.fn.getline("."):match("^(%s*)") or ""
+  local lnum = vim.fn.line(".")
+  vim.fn.append(lnum - 1, indent)
+end, { desc = "Insert blank line above" })
+
+
+
 
