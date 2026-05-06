@@ -656,7 +656,7 @@ map("n", "<leader>rc", function()
   local lnum = vim.fn.line(".")
   vim.fn.append(lnum - 1, comment_line)
   vim.fn.cursor(lnum, #comment_line + 1)
-end, { desc = "Insert comment line" })
+end, { desc = "Add empty comment before cursor" })
 
 map("n", "<leader>rt", function()
   local cs = vim.bo.commentstring
@@ -685,13 +685,13 @@ map("n", "<leader>rt", function()
   vim.fn.append(lnum - 1, comment_line)
   vim.fn.cursor(lnum, #comment_line + 1)
   vim.cmd("startinsert!")
-end, { desc = "Insert TODO comment" })
+end, { desc = "Add todo comment before cursor" })
 
 map("n", "<leader>ro", function()
   local indent = vim.fn.getline("."):match("^(%s*)") or ""
   local lnum = vim.fn.line(".")
   vim.fn.append(lnum - 1, indent)
-end, { desc = "Insert blank line above" })
+end, { desc = "Add new line before cursor" })
 
 
 
