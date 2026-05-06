@@ -656,7 +656,6 @@ map("n", "<leader>rc", function()
   local lnum = vim.fn.line(".")
   vim.fn.append(lnum - 1, comment_line)
   vim.fn.cursor(lnum, #comment_line + 1)
-  vim.cmd("startinsert!")
 end, { desc = "Insert comment line" })
 
 map("n", "<leader>rt", function()
