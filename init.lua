@@ -104,7 +104,6 @@ map("n", "<leader>cr", "<cmd>belowright Compile<CR>", { desc = "Run compile mode
 map("n", "<leader>cq", function()
   require("compile-mode").close_buffer()
 end, { desc = "Close compile window" })
-map("n", "<leader>q", ":bdelete<CR>", { desc = "Close buffer" })
 map("n", "<leader>bq", ":bdelete<CR>", { desc = "Close buffer" })
 map("n", "<leader>bn", ":enew<CR>", { desc = "New buffer" })
 
@@ -631,8 +630,8 @@ vim.diagnostic.config({
   severity_sort = true,
 })
 
--- Insert comment line with language-appropriate syntax
-map("n", "<leader>rc", function()
+-- Quickeys: insert comment line with language-appropriate syntax
+map("n", "<leader>qc", function()
   local cs = vim.bo.commentstring
   if not cs or cs == "" then
     local ft_leaders = {
@@ -658,9 +657,9 @@ map("n", "<leader>rc", function()
   local lnum = vim.fn.line(".")
   vim.fn.append(lnum - 1, comment_line)
   vim.fn.cursor(lnum, #comment_line + 1)
-end, { desc = "Add empty comment before cursor" })
+end, { desc = "Quick comment before cursor" })
 
-map("n", "<leader>rt", function()
+map("n", "<leader>qt", function()
   local cs = vim.bo.commentstring
   if not cs or cs == "" then
     local ft_leaders = {
@@ -687,13 +686,13 @@ map("n", "<leader>rt", function()
   vim.fn.append(lnum - 1, comment_line)
   vim.fn.cursor(lnum, #comment_line + 1)
   vim.cmd("startinsert!")
-end, { desc = "Add todo comment before cursor" })
+end, { desc = "Quick todo comment before cursor" })
 
-map("n", "<leader>ro", function()
+map("n", "<leader>qo", function()
   local indent = vim.fn.getline("."):match("^(%s*)") or ""
   local lnum = vim.fn.line(".")
   vim.fn.append(lnum - 1, indent)
-end, { desc = "Add new line before cursor" })
+end, { desc = "Quick new line before cursor" })
 
 
 
