@@ -105,6 +105,8 @@ map("n", "<leader>cq", function()
   require("compile-mode").close_buffer()
 end, { desc = "Close compile window" })
 map("n", "<leader>q", ":bdelete<CR>", { desc = "Close buffer" })
+map("n", "<leader>bq", ":bdelete<CR>", { desc = "Close buffer" })
+map("n", "<leader>bn", ":enew<CR>", { desc = "New buffer" })
 
 -- Git change navigation
 map("n", "]c", function()
