@@ -9,4 +9,4 @@ source "$DIR/lib.sh"
 printf 'local x = 1\nprint(x)\n' > "$BENCH_TMP/buf.lua"
 
 echo "== Insert-mode entry (min of $RUNS runs) =="
-bench_event "first InsertEnter (cmp + copilot)" "InsertEnter" "$BENCH_TMP/buf.lua"
+bench_event "first InsertEnter (cmp)" "InsertEnter" "$BENCH_TMP/buf.lua"
