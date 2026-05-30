@@ -12,5 +12,6 @@ bash "$DIR/lazyload.sh";  echo
 bash "$DIR/insert.sh";    echo
 bash "$DIR/lsp.sh";       echo
 bash "$DIR/largefile.sh"; echo
+bash "$DIR/redraw.sh";    echo
 bash "$DIR/telescope.sh"; echo
 bash "$DIR/guard.sh"

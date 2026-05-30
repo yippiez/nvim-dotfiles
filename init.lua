@@ -1,3 +1,8 @@
+-- Byte-compiled Lua module cache. Speeds up every require() (plugins, LSP,
+-- telescope, treesitter) on later launches once the cache is warm. Must be the
+-- first thing so it covers all subsequent requires. Pure speed, no behavior change.
+vim.loader.enable()
+
 -- Set Leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
@@ -14,6 +19,14 @@ vim.g.loaded_matchit = 1
 vim.g.loaded_matchparen = 1
 vim.g.loaded_tohtml = 1
 vim.g.loaded_tutor = 1
+
+-- Disable unused remote-plugin providers. Probing for these (e.g. has("python3"))
+-- scans the Windows PATH over 9p on WSL and costs ~685ms — paid the moment any
+-- plugin touches the provider. All plugins here are pure Lua, so none are needed.
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
 
 vim.opt.lazyredraw = true
 vim.opt.updatetime = 300
@@ -35,22 +48,18 @@ vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.opt.synmaxcol = 200
 
 -- Clipboard support
-if vim.fn.has("wsl") ~= 1 then
-  vim.opt.clipboard = "unnamedplus"
-else
-  -- win32yank.exe is in PATH via WSL interop
-  if vim.fn.executable("win32yank.exe") == 1 then
-    vim.g.clipboard = {
-      name = "win32yank-wsl",
-      copy = { ["+"] = { "win32yank.exe", "-i", "--crlf" }, ["*"] = { "win32yank.exe", "-i", "--crlf" } },
-      paste = { ["+"] = { "win32yank.exe", "-o", "--lf" }, ["*"] = { "win32yank.exe", "-o", "--lf" } },
-      cache_enabled = true,
-    }
-    vim.opt.clipboard = "unnamedplus"
-  else
-    vim.opt.clipboard = "unnamedplus"
-  end
+-- NOTE: do NOT probe with vim.fn.executable("win32yank.exe") here — on WSL that
+-- scans the whole Windows PATH (75+ /mnt/c entries) over the 9p filesystem and
+-- costs ~500ms at startup. win32yank is resolved lazily on first yank instead.
+if vim.fn.has("wsl") == 1 then
+  vim.g.clipboard = {
+    name = "win32yank-wsl",
+    copy = { ["+"] = { "win32yank.exe", "-i", "--crlf" }, ["*"] = { "win32yank.exe", "-i", "--crlf" } },
+    paste = { ["+"] = { "win32yank.exe", "-o", "--lf" }, ["*"] = { "win32yank.exe", "-o", "--lf" } },
+    cache_enabled = true,
+  }
 end
+vim.opt.clipboard = "unnamedplus"
 
 local api = vim.api
 
@@ -183,7 +192,17 @@ local plugins = {
   -- Status line
   {
     "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
     config = function()
+      -- Cache the listed-buffer count and refresh only when buffers are
+      -- added/removed, instead of rebuilding a full getbufinfo() table on every
+      -- statusline redraw (which happens on every cursor move / mode change).
+      local buf_count = 0
+      local function refresh_buf_count()
+        buf_count = #vim.fn.getbufinfo({ buflisted = 1 })
+      end
+      api.nvim_create_autocmd({ "BufAdd", "BufDelete", "BufFilePost" }, { callback = refresh_buf_count })
+      refresh_buf_count()
       require("lualine").setup({
         options = { icons_enabled = false, section_separators = "", component_separators = "" },
         sections = {
@@ -200,7 +219,7 @@ local plugins = {
             "filename",
           },
           lualine_x = {
-            function() return "bufs:" .. #vim.fn.getbufinfo({ buflisted = 1 }) end,
+            function() return "bufs:" .. buf_count end,
           },
           lualine_y = { "filetype" },
           lualine_z = { "location" },
@@ -230,6 +249,7 @@ local plugins = {
   -- Git signs
   {
     "lewis6991/gitsigns.nvim",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("gitsigns").setup({
         signs = {
@@ -277,7 +297,7 @@ local plugins = {
   -- LSP core
   {
     "neovim/nvim-lspconfig",
-    lazy = false,
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = { "hrsh7th/cmp-nvim-lsp" },
     config = function()
       -- LSP capabilities
@@ -290,6 +310,7 @@ local plugins = {
 
       -- Pyright
       vim.lsp.config("pyright", {
+        cmd = { vim.fn.expand("~/.local/bin/pyright-langserver"), "--stdio" },
         settings = {
           python = {
             analysis = {
@@ -336,6 +357,7 @@ local plugins = {
 
       -- Go
       vim.lsp.config("gopls", {
+        cmd = { vim.fn.expand("~/go/bin/gopls") },
         settings = {
           gopls = {
             analyses = { unusedparams = true, shadow = true },
@@ -369,7 +391,7 @@ local plugins = {
 
       -- Dart/Flutter
       vim.lsp.config("dartls", {
-        cmd = { "dart", "language-server", "--lsp", "--protocol=analyzer" },
+        cmd = { vim.fn.expand("~/Flutter/bin/dart"), "language-server", "--lsp", "--protocol=analyzer" },
         settings = {
           dart = {
             analysisExcludedFolders = { ".dart_tool", "build" },
@@ -380,29 +402,61 @@ local plugins = {
         },
       })
 
-      vim.lsp.enable({ "pyright", "ts_ls", "rust_analyzer", "svelte", "gopls", "hls", "elixirls", "dartls" })
+      -- Only enable servers whose binary is actually present. Check absolute
+      -- paths with fs_stat (instant) — NEVER vim.fn.executable()/exepath(),
+      -- which scan the Windows PATH over 9p on WSL (~116ms per missing binary,
+      -- paid on every buffer open). ts_ls/svelte/hls were enabled but not
+      -- installed, costing ~350ms per file open; re-add them below with an
+      -- absolute cmd once their servers are installed.
+      local function have(p) return vim.uv.fs_stat(vim.fn.expand(p)) ~= nil end
+      local servers = {}
+      local checks = {
+        { "pyright",       "~/.local/bin/pyright-langserver" },
+        { "gopls",         "~/go/bin/gopls" },
+        { "dartls",        "~/Flutter/bin/dart" },
+        { "rust_analyzer", "~/.local/bin/rust-analyzer" },
+        { "elixirls",      "~/.elixir-ls/release/language_server.sh" },
+      }
+      for _, c in ipairs(checks) do
+        if have(c[2]) then servers[#servers + 1] = c[1] end
+      end
+      vim.lsp.enable(servers)
     end,
   },
 
   -- Telescope
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons" },
+    -- Preload just after startup (invisible to the user) so the FIRST <leader>ff
+    -- is as instant as later ones — no lazy-load chain stall on the keypress.
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      -- Compiled C sorter: ranks/filters large result sets far faster than the
+      -- default Lua sorter (this is what made the first list slow to populate).
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    },
     config = function()
       local telescope = require("telescope")
       telescope.setup({
         defaults = {
-          file_ignore_patterns = { "node_modules" },
+          file_ignore_patterns = { "node_modules", "%.git/" },
           layout_strategy = "bottom_pane",
           layout_config = { bottom_pane = { height = 0.4, prompt_position = "bottom" } },
           previewer = false,
         },
         pickers = { find_files = { disable_devicons = true }, buffers = { disable_devicons = true } },
+        extensions = {
+          fzf = { fuzzy = true, override_generic_sorter = true, override_file_sorter = true },
+        },
       })
+      pcall(telescope.load_extension, "fzf")
       local builtin = require("telescope.builtin")
       local custom_find_files = function()
         builtin.find_files({
-          find_command = { "rg", "--files", "--color=never", "--hidden", "--ignore-file", ".jjignore" },
+          -- fd is purpose-built for file enumeration and faster than `rg --files`.
+          find_command = { "fd", "--type", "f", "--color", "never", "--hidden", "--ignore-file", ".jjignore" },
         })
       end
       local custom_live_grep = function()
@@ -436,22 +490,34 @@ local plugins = {
     end,
   },
 
-  -- Oil 
+  -- Oil
   {
     "stevearc/oil.nvim",
+    cmd = "Oil",
+    keys = { { "<leader>o", "<cmd>Oil<CR>", desc = "Open Oil" } },
+    -- Hijack directories opened directly (e.g. `nvim .`) since netrw is disabled
+    init = function()
+      api.nvim_create_autocmd("VimEnter", {
+        callback = function()
+          if vim.fn.isdirectory(vim.fn.expand("%:p")) == 1 then
+            vim.cmd("Oil")
+          end
+        end,
+      })
+    end,
     config = function()
       require("oil").setup({
         columns = { "size" },
         view_options = { show_hidden = true },
         keymaps = { ["<C-p>"] = false, ["<C-i>"] = "actions.preview" },
       })
-      map("n", "<leader>o", ":Oil<CR>", { desc = "Open Oil" })
     end,
   },
 
   -- Comment
   {
     "numToStr/Comment.nvim",
+    keys = { { "<leader>cc", mode = { "n", "v" } } },
     config = function()
       local comment = require("Comment")
       comment.setup({
@@ -472,6 +538,7 @@ local plugins = {
   -- TreeSJ (split/join)
   {
     "Wansmer/treesj",
+    keys = { "<leader>ls", "<leader>lS" },
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
       local tsj = require("treesj")
@@ -485,6 +552,7 @@ local plugins = {
   {
     "ej-shafran/compile-mode.nvim",
     version = "^5.0.0",
+    cmd = { "Compile", "Recompile" },
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       vim.g.compile_mode = {
@@ -504,6 +572,7 @@ local plugins = {
   -- Completion
   {
     "hrsh7th/nvim-cmp",
+    event = "InsertEnter",
     dependencies = { "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-buffer", "hrsh7th/cmp-path" },
     config = function()
       local cmp = require("cmp")
@@ -556,10 +625,19 @@ local plugins = {
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPost", "BufNewFile" },
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "lua", "vim", "python", "javascript", "typescript", "dart" },
+        -- Pre-install parsers for languages actually used here so opening one of
+        -- these files never pays the ~475ms compile-on-first-open that
+        -- auto_install incurs for a missing parser. auto_install still covers
+        -- anything not listed.
+        ensure_installed = {
+          "lua", "vim", "vimdoc", "python", "javascript", "typescript", "tsx",
+          "dart", "latex", "rust", "go", "gomod", "elixir", "haskell",
+          "json", "yaml", "toml", "html", "css", "bash", "markdown", "markdown_inline",
+        },
         auto_install = true,
         highlight = {
           enable = true,
@@ -593,6 +671,8 @@ local plugins = {
   -- Auto-detect indentation
   {
     "NMAC427/guess-indent.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = "GuessIndent",
     config = function()
       require("guess-indent").setup({})
     end,
