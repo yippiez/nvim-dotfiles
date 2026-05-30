@@ -41,7 +41,10 @@ bench_startup() {
   local vals=() i log
   for i in $(seq 1 "$RUNS"); do
     log="$BENCH_TMP/start.log"
-    "$NVIM" --headless --startuptime "$log" "$@" +q >/dev/null 2>&1 || true
+    # +qa (not +q): opening multiple files leaves an arglist, and +q then warns
+    # "N more files to edit" and hangs headless. Opening never modifies a buffer,
+    # so +qa won't prompt.
+    "$NVIM" --headless --startuptime "$log" "$@" +qa >/dev/null 2>&1 || true
     vals+=("$(_log_total "$log")")
   done
   BENCH_RESULT="$(_min "${vals[@]}")"
