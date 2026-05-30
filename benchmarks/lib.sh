@@ -70,6 +70,38 @@ eval_g() {
   "$NVIM" --headless "+lua io.write(tostring(vim.g.$1))" +qa 2>/dev/null
 }
 
+# _settle_lsp: terminate language servers left running by benchmark nvims so a
+# heavy one (rust-analyzer indexing) doesn't inflate the NEXT measurement via CPU
+# contention. Matches exact binary names only (pkill -x), so it won't touch your
+# shell or scripts. NOTE: it will also stop servers from a real nvim session you
+# have open — only used by benchmarks that intentionally spawn many servers.
+_settle_lsp() {
+  pkill -x rust-analyzer 2>/dev/null || true
+  pkill -x gopls 2>/dev/null || true
+  pkill -x pyright-langserver 2>/dev/null || true
+  pkill -x clangd 2>/dev/null || true
+  sleep "${BENCH_SETTLE:-0.4}"
+}
+
+# bench_file_op "<label>" "<file>" "<lua timed body>"
+# Opens <file>, fires VeryLazy (so VeryLazy plugins are loaded), then times the
+# lua body. Use for editing operations on a real buffer (reindent, search, etc).
+# Sets BENCH_RESULT.
+bench_file_op() {
+  local label="$1" file="$2" body="$3"
+  local vals=() i out
+  for i in $(seq 1 "$RUNS"); do
+    # qa! (force): editing ops modify the buffer, and a plain qa would block on
+    # the "No write since last change" prompt forever in headless.
+    out="$("$NVIM" --headless "$file" \
+      "+lua pcall(function() vim.cmd('doautocmd User VeryLazy') end); local t=vim.uv.hrtime(); $body; io.write(string.format('%.3f',(vim.uv.hrtime()-t)/1e6))" \
+      "+qa!" 2>/dev/null)" || true
+    vals+=("$out")
+  done
+  BENCH_RESULT="$(_min "${vals[@]}")"
+  printf '  %-42s %8s ms\n' "$label" "${BENCH_RESULT:-ERR}"
+}
+
 # bench_event "<label>" "<EventName>" [file]
 # Opens an optional file, then fires an autocmd event and times how long it takes
 # to settle — i.e. the cost of whatever lazy-loads on that event (e.g. cmp +

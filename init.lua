@@ -51,10 +51,18 @@ vim.opt.synmaxcol = 200
 -- NOTE: do NOT probe with vim.fn.executable("win32yank.exe") here — on WSL that
 -- scans the whole Windows PATH (75+ /mnt/c entries) over the 9p filesystem and
 -- costs ~500ms at startup. win32yank is resolved lazily on first yank instead.
+--
+-- COPY via OSC52 (a terminal escape, zero process spawn) instead of shelling out
+-- to win32yank.exe on every yank: with clipboard=unnamedplus, every y/d/c/x
+-- writes the + register, and a win32yank spawn blocks ~200ms each time. OSC52 is
+-- instant. PASTE still uses win32yank so pulling text from Windows apps works;
+-- internal yank->put is served from Neovim's own cache and never spawns.
+-- (Requires a terminal that honours OSC52 clipboard writes — Windows Terminal does.)
 if vim.fn.has("wsl") == 1 then
+  local osc52 = require("vim.ui.clipboard.osc52")
   vim.g.clipboard = {
-    name = "win32yank-wsl",
-    copy = { ["+"] = { "win32yank.exe", "-i", "--crlf" }, ["*"] = { "win32yank.exe", "-i", "--crlf" } },
+    name = "osc52-copy/win32yank-paste",
+    copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
     paste = { ["+"] = { "win32yank.exe", "-o", "--lf" }, ["*"] = { "win32yank.exe", "-o", "--lf" } },
     cache_enabled = true,
   }
