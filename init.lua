@@ -580,7 +580,9 @@ local plugins = {
   -- Completion
   {
     "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
+    -- Preload just after startup (invisible) rather than on the first keystroke,
+    -- so the first time you enter insert mode there's no ~25ms cmp-load hitch.
+    event = "VeryLazy",
     dependencies = { "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-buffer", "hrsh7th/cmp-path" },
     config = function()
       local cmp = require("cmp")
