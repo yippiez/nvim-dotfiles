@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Insert-mode entry latency. The first time you press `i`, the InsertEnter event
-# lazy-loads nvim-cmp (completion) and copilot. This is felt as a hitch before
-# the cursor is usable, so it's worth measuring directly.
+# lazy-loads nvim-cmp (completion). This is felt as a hitch before the cursor is
+# usable, so it's worth measuring directly.
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$DIR/lib.sh"
