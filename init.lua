@@ -601,27 +601,6 @@ local plugins = {
     end,
   },
 
-  -- Copilot
-  {
-    "zbirenbaum/copilot.lua",
-    event = "InsertEnter",
-    config = function()
-      require("copilot").setup({
-        suggestion = {
-          enabled = false,
-          auto_trigger = true,
-          keymap = {
-            accept = "<Right>",
-            accept_word = "<C-Right>",
-            next = "<S-Down>",
-            prev = "<S-Up>",
-          },
-        },
-        panel = { enabled = false },
-      })
-    end,
-  },
-
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
