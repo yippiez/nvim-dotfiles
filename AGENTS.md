@@ -19,7 +19,6 @@ This is a single-file Neovim configuration using lazy.nvim plugin manager.
 - **Window Management**: Hydra plugin (`<C-w>`)
 - **Debugging**: DAP and DAP View with Hydra debug mode (`<leader>md`)
 - **Status Line**: Lualine with git and LSP integration
-- **AI Completion**: Copilot for intelligent code suggestions
 - **Syntax Highlighting**: Treesitter with incremental selection (`gnn`, `grn`)
 - **Auto-fold Persistence**: Manual folds saved/restored automatically
 - **WSL Clipboard**: Integrated clipboard support for Windows
