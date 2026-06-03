@@ -726,7 +726,7 @@ map("n", "<leader>qc", function()
   local lnum = vim.fn.line(".")
   vim.fn.append(lnum - 1, comment_line)
   vim.fn.cursor(lnum, #comment_line + 1)
-end, { desc = "Quick comment before cursor" })
+end, { desc = "Comment before cursor" })
 
 map("n", "<leader>qt", function()
   local cs = vim.bo.commentstring
@@ -755,13 +755,13 @@ map("n", "<leader>qt", function()
   vim.fn.append(lnum - 1, comment_line)
   vim.fn.cursor(lnum, #comment_line + 1)
   vim.cmd("startinsert!")
-end, { desc = "Quick todo comment before cursor" })
+end, { desc = "Todo comment before cursor" })
 
 map("n", "<leader>qo", function()
   local indent = vim.fn.getline("."):match("^(%s*)") or ""
   local lnum = vim.fn.line(".")
   vim.fn.append(lnum - 1, indent)
-end, { desc = "Quick new line before cursor" })
+end, { desc = "New line before cursor" })
 
 
 
