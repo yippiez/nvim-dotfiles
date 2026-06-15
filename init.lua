@@ -517,6 +517,7 @@ local plugins = {
       require("oil").setup({
         columns = { "size" },
         view_options = { show_hidden = true },
+        watch_for_changes = true,
         keymaps = { ["<C-p>"] = false, ["<C-i>"] = "actions.preview" },
       })
     end,
