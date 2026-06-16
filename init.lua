@@ -122,7 +122,8 @@ map("n", "<leader>cq", function()
   require("compile-mode").close_buffer()
 end, { desc = "Close compile window" })
 map("n", "<leader>bq", ":bdelete<CR>", { desc = "Close buffer" })
-map("n", "<leader>bn", ":enew<CR>", { desc = "New buffer" })
+map("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" })
+map("n", "<leader>bn", ":bnext<CR>", { desc = "Next buffer" })
 
 -- Git change navigation
 map("n", "]c", function()
@@ -173,6 +174,8 @@ vim.cmd("command! Wq wq")
 vim.cmd("command! W w")
 vim.cmd("command! Q q!")
 vim.cmd("cnoreabbrev Q! q!")
+vim.cmd("command! -nargs=1 Rg terminal rg <args>")
+vim.cmd("cnoreabbrev rg Rg")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
@@ -461,10 +464,34 @@ local plugins = {
       })
       pcall(telescope.load_extension, "fzf")
       local builtin = require("telescope.builtin")
+      local actions = require("telescope.actions")
+      local action_state = require("telescope.actions.state")
+
+      local function open_in_existing_buf(prompt_bufnr)
+        local picker = action_state.get_current_picker(prompt_bufnr)
+        local entry = action_state.get_selected_entry()
+        actions.close(prompt_bufnr)
+        if entry then
+          local filepath = entry.path or entry[1]
+          -- Check if buffer already exists for this file
+          for _, b in ipairs(vim.fn.getbufinfo({ buflisted = 1 })) do
+            if vim.fn.fnamemodify(b.name, ":p") == vim.fn.fnamemodify(filepath, ":p") then
+              vim.api.nvim_set_current_buf(b.bufnr)
+              return
+            end
+          end
+          vim.cmd("edit " .. vim.fn.fnameescape(filepath))
+        end
+      end
+
       local custom_find_files = function()
         builtin.find_files({
-          -- fd is purpose-built for file enumeration and faster than `rg --files`.
           find_command = { "fd", "--type", "f", "--color", "never", "--hidden", "--ignore-file", ".jjignore" },
+          attach_mappings = function(_, map)
+            map("i", "<CR>", open_in_existing_buf)
+            map("n", "<CR>", open_in_existing_buf)
+            return true
+          end,
         })
       end
       local custom_live_grep = function()
