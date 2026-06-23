@@ -639,6 +639,34 @@ local plugins = {
     end,
   },
 
+  -- Copilot: inline ghost-text completion + the Copilot LSP that powers NES
+  {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
+    config = function()
+      require("copilot").setup({
+        -- copilot.lua spawns copilot-language-server via node. The default
+        -- "node" resolves through $PATH, which on WSL scans 75+ /mnt/c entries
+        -- over 9p (~500ms). Point straight at the nvm binary. Bump this path if
+        -- the nvm node version changes. (See WSL PATH-scan note above.)
+        copilot_node_command = vim.fn.expand("~/.nvm/versions/node/v22.22.2/bin/node"),
+        suggestion = {
+          enabled = true,      -- the "virtual text" ghost-text completions
+          auto_trigger = true, -- appear as you type, no keypress needed
+          keymap = {
+            accept = "<Right>",  -- Right arrow: accept the whole suggestion
+            next = "<M-Right>",  -- Alt+Right: next suggestion
+            prev = "<M-Left>",   -- Alt+Left: previous suggestion
+            dismiss = false,     -- no dismiss keymap
+          },
+        },
+        panel = { enabled = false }, -- no separate suggestions panel
+        nes = { enabled = false },   -- next-edit suggestions off; ghost text only
+      })
+    end,
+  },
+
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
