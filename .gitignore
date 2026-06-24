@@ -3,3 +3,4 @@
 .nvimlog
 tmp/
 lazy-lock.json
+.env
