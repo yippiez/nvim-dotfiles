@@ -22,5 +22,3 @@ This is a single-file Neovim configuration using lazy.nvim plugin manager.
 - **Syntax Highlighting**: Treesitter with incremental selection (`gnn`, `grn`)
 - **Auto-fold Persistence**: Manual folds saved/restored automatically
 - **WSL Clipboard**: Integrated clipboard support for Windows
-
-

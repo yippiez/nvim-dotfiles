@@ -621,8 +621,14 @@ local plugins = {
           { name = "path" },
         }),
         mapping = cmp.mapping.preset.insert({
-          ["<Tab>"] = cmp.mapping.select_next_item(),
-          ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+          -- Only drive the cmp menu when it's open; otherwise fall through to a
+          -- literal <Tab>/<S-Tab>.
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then cmp.select_next_item() else fallback() end
+          end),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then cmp.select_prev_item() else fallback() end
+          end),
           ["<CR>"] = cmp.mapping(function(fallback)
             if cmp.visible() and cmp.get_selected_entry() then
               cmp.confirm({ select = false })
@@ -639,30 +645,24 @@ local plugins = {
     end,
   },
 
-  -- Copilot: inline ghost-text completion + the Copilot LSP that powers NES
+  -- cursortab.nvim: Cursor-style "Tab" completions, served by a LOCAL llama.cpp
+  -- llama-server on :8000 -- no cloud, no API key. Run `sweep-server` to back it.
+  -- <Tab> accepts (the cmp block above falls through to a literal <Tab> when its
+  -- menu is closed), <S-Tab> partial-accepts. :CursortabStatus / :CursortabRestart.
+  -- The Qwen/FIM backend is parked until the fim_tokens validator fix lands on
+  -- the fork's main (yippiez/cursortab.nvim#3); then re-add the "fim" provider.
   {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
+    -- Your fork (not upstream). Edit/commit/PR via the cursortab/ submodule;
+    -- `:Lazy update` pulls the fork's main into lazy's own clone.
+    "yippiez/cursortab.nvim",
+    lazy = false,
+    -- The daemon needs Go 1.25+; system Go is 1.22, so build with the user-local
+    -- 1.26 toolchain in ~/.local/go. We inject it onto PATH only for this build
+    -- shell rather than touching nvim's environment. Bump if that Go dir changes.
+    build = "cd server && PATH=" .. os.getenv("HOME") .. "/.local/go/bin:$PATH go build",
     config = function()
-      require("copilot").setup({
-        -- copilot.lua spawns copilot-language-server via node. The default
-        -- "node" resolves through $PATH, which on WSL scans 75+ /mnt/c entries
-        -- over 9p (~500ms). Point straight at the nvm binary. Bump this path if
-        -- the nvm node version changes. (See WSL PATH-scan note above.)
-        copilot_node_command = vim.fn.expand("~/.nvm/versions/node/v22.22.2/bin/node"),
-        suggestion = {
-          enabled = true,      -- the "virtual text" ghost-text completions
-          auto_trigger = true, -- appear as you type, no keypress needed
-          keymap = {
-            accept = "<Right>",  -- Right arrow: accept the whole suggestion
-            next = "<M-Right>",  -- Alt+Right: next suggestion
-            prev = "<M-Left>",   -- Alt+Left: previous suggestion
-            dismiss = false,     -- no dismiss keymap
-          },
-        },
-        panel = { enabled = false }, -- no separate suggestions panel
-        nes = { enabled = false },   -- next-edit suggestions off; ghost text only
+      require("cursortab").setup({
+        provider = { type = "sweep", url = "http://localhost:8000" },
       })
     end,
   },
@@ -818,7 +818,3 @@ map("n", "<leader>qo", function()
   local lnum = vim.fn.line(".")
   vim.fn.append(lnum - 1, indent)
 end, { desc = "New line before cursor" })
-
-
-
-
