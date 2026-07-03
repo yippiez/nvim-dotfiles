@@ -1,3 +1,0 @@
-[submodule "cursortab"]
-	path = cursortab
-	url = https://github.com/yippiez/cursortab.nvim.git

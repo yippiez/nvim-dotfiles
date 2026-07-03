@@ -29,7 +29,7 @@ a thin entry point; everything else lives in `lua/`.
 ### Key Features
 - **Fuzzy Finder**: Telescope (`<leader>f*`)
 - **File Management**: Oil (`<leader>o`)
-- **Completion**: nvim-cmp + cursortab.nvim local "Tab" completion (`<Tab>`)
+- **Completion**: nvim-cmp with Tab completion (`<Tab>`)
 - **Fast Navigation**: Flash (`s`, `S`)
 - **LSP**: nvim-lspconfig (absolute-path gated) + lsp-lens + treesj
 - **Status Line**: Lualine with git and LSP integration
