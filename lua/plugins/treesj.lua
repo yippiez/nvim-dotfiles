@@ -3,7 +3,10 @@ local map = vim.keymap.set
 -- TreeSJ (split/join)
 return {
   "Wansmer/treesj",
-  keys = { "<leader>ls", "<leader>lS" },
+  keys = {
+    { "<leader>ls", desc = "Toggle split/join" },
+    { "<leader>lS", desc = "Toggle recursive split/join" },
+  },
   dependencies = { "nvim-treesitter/nvim-treesitter" },
   config = function()
     local tsj = require("treesj")
