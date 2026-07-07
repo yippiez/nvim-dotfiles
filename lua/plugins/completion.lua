@@ -32,7 +32,8 @@ return {
         end),
         ["<C-d>"] = cmp.mapping.scroll_docs(4),
         ["<C-f>"] = cmp.mapping.scroll_docs(-4),
-        ["<M-.>"] = cmp.mapping.complete(),
+        -- <M-.> belongs to tabagentic (prompt bar); manual complete moved here.
+        ["<C-Space>"] = cmp.mapping.complete(),
       }),
     })
   end,
