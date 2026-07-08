@@ -41,6 +41,10 @@ bench_startup() {
   local vals=() i log
   for i in $(seq 1 "$RUNS"); do
     log="$BENCH_TMP/start.log"
+    # --startuptime APPENDS to an existing log; without this rm the log
+    # accumulates every run and _log_total returns the max across all of them
+    # (so every row reports the slowest run so far, not this run's min).
+    rm -f "$log"
     # +qa (not +q): opening multiple files leaves an arglist, and +q then warns
     # "N more files to edit" and hangs headless. Opening never modifies a buffer,
     # so +qa won't prompt.

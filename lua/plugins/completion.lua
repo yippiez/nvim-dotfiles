@@ -8,9 +8,28 @@ return {
   config = function()
     local cmp = require("cmp")
     cmp.setup({
+      -- Cap how many entries get rendered per popup; ranking happens on the
+      -- full set regardless, so this only trims layout work (default 200).
+      performance = { max_view_entries = 30 },
       sources = cmp.config.sources({
         { name = "nvim_lsp" },
-        { name = "buffer", keyword_length = 3, max_item_count = 10 },
+        {
+          name = "buffer",
+          keyword_length = 3,
+          max_item_count = 10,
+          option = {
+            -- cmp-buffer word-indexes the whole buffer on first completion;
+            -- on a large file that's a visible freeze. Skip it there — LSP
+            -- and path sources still work.
+            get_bufnrs = function()
+              local buf = vim.api.nvim_get_current_buf()
+              if require("util").is_large_file(buf) then
+                return {}
+              end
+              return { buf }
+            end,
+          },
+        },
         { name = "path" },
       }),
       mapping = cmp.mapping.preset.insert({

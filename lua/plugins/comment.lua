@@ -3,7 +3,9 @@ local map = vim.keymap.set
 -- Comment
 return {
   "numToStr/Comment.nvim",
-  keys = { { "<leader>cc", mode = { "n", "v" } } },
+  keys = {
+    { "<leader>cc", mode = { "n", "v" }, desc = "Toggle comment" },
+  },
   config = function()
     local comment = require("Comment")
     comment.setup({

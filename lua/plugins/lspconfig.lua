@@ -4,13 +4,65 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   dependencies = { "hrsh7th/cmp-nvim-lsp" },
   config = function()
-    -- LSP capabilities
+    -- Skip LSP log IO entirely: the default WARN level still writes every
+    -- server stderr line to lsp.log, which is pure overhead on chatty servers.
+    vim.lsp.set_log_level("off")
+
+    -- Servers (pyright especially) emit docstrings as escaped markdown:
+    -- "&nbsp;" for indentation and backslash-escaped punctuation ("base\_url"),
+    -- which the float renders literally. Clean those up before rendering.
+    -- This function feeds hover and signature help; fenced code blocks are
+    -- left untouched (they're shown verbatim, unescaping would corrupt them).
+    local orig_convert = vim.lsp.util.convert_input_to_markdown_lines
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.lsp.util.convert_input_to_markdown_lines = function(input, contents)
+      local lines = orig_convert(input, contents)
+      local fenced = false
+      for i, line in ipairs(lines) do
+        if line:find("^%s*```") then
+          fenced = not fenced
+        elseif not fenced then
+          lines[i] = line
+            :gsub("&nbsp;", " ")
+            :gsub("&lt;", "<")
+            :gsub("&gt;", ">")
+            :gsub("&amp;", "&")
+            :gsub("\\([\\`*_{}%[%]()#+%-%.!<>|])", "%1")
+        end
+      end
+      return lines
+    end
+
+    -- LSP capabilities. NOTE: default_capabilities() takes an *options*
+    -- override, not a base table — passing make_client_capabilities() into it
+    -- (as this config used to) silently discarded every non-completion
+    -- capability. Merge instead.
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     local cmp_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
     if cmp_ok then
-      capabilities = cmp_lsp.default_capabilities(capabilities)
+      capabilities = vim.tbl_deep_extend("force", capabilities, cmp_lsp.default_capabilities())
     end
-    vim.lsp.config("*", { capabilities = capabilities })
+
+    -- Don't offer client-side file watching. When a server registers for it,
+    -- core loads vim.lsp._watchfiles, which (a) probes for inotifywait with
+    -- vim.fn.executable() — the 9p Windows-PATH scan — and (b) inotifywait
+    -- isn't installed here, so it falls back to a Lua poller that recursively
+    -- scans and stat-polls the whole workspace: seconds of blocking at attach
+    -- on a big repo plus constant background CPU. Without the capability,
+    -- pyright/gopls/rust-analyzer use their own native watchers instead.
+    capabilities.workspace.didChangeWatchedFiles = { dynamicRegistration = false }
+
+    -- Don't request semantic tokens: the server computes a full-file token
+    -- set on open and after edits, stealing time from definition/completion
+    -- requests. Treesitter already provides highlighting.
+    capabilities.textDocument.semanticTokens = nil
+
+    vim.lsp.config("*", {
+      capabilities = capabilities,
+      -- Batch didChange notifications a bit more (default 150ms) so servers
+      -- re-analyze less often while typing, keeping them responsive for gd.
+      flags = { debounce_text_changes = 250 },
+    })
 
     -- Pyright
     vim.lsp.config("pyright", {
