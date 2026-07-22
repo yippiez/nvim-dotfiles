@@ -12,6 +12,8 @@ a thin entry point; everything else lives in `lua/`.
   command aliases, quickeys).
 - `lua/config/lazy.lua` — bootstraps lazy and `setup({ { import = "plugins" } })`.
 - `lua/config/diagnostics.lua` — `vim.diagnostic.config`.
+- `lua/config/open-image.lua` — open the image under the cursor in the OS
+  viewer (lazily required by the `<leader>i` keymap, so it costs no startup).
 - `lua/util.lua` — shared helpers (e.g. `is_large_file`).
 - `lua/plugins/<name>.lua` — **one file per plugin**, each returning a lazy spec.
 
@@ -35,5 +37,7 @@ a thin entry point; everything else lives in `lua/`.
 - **Status Line**: Lualine with git and LSP integration
 - **Syntax Highlighting**: Treesitter with incremental selection (`gnn`, `grn`)
 - **Git**: gitsigns (`]c`/`[c`) + todo-comments
+- **Markdown Images**: `<leader>i` opens the image under the cursor in the OS
+  viewer (WSL/macOS/Linux/Windows) — no inline terminal rendering
 - **Auto-fold Persistence**: manual folds saved/restored automatically
 - **WSL Clipboard**: OSC52 copy / win32yank paste
